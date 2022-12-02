@@ -1,14 +1,16 @@
 spring:
   jpa:
+    properties:
+      show-sql: true
+      format_sql: true
     database: MYSQL
+    hibernate:
+      ddl-auto: update
 
   datasource:
-    url: { URL }
-    username: { USERNAME }
-    password: { PASSWORD }
-
-  hibernate:
-    ddl-auto: none
+    url: ${URL}
+    username: ${USER}
+    password: ${PASSWORD}
 
   properties:
     show-sql: true
@@ -19,3 +21,4 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+

@@ -1,7 +1,7 @@
 package io.GuiWEspinola.poc1.service;
 
-import io.GuiWEspinola.poc1.entities.Address;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
 
-public interface AddressService extends JpaRepository<Address, Long> {
+@Service
+public interface AddressService {
 }
