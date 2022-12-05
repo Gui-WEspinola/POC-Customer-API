@@ -35,4 +35,10 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer save(CustomerRequestDTO customerRequestDTO) {
         return customerRepository.save(mapper.map(customerRequestDTO, Customer.class));
     }
+
+    @Override
+    public void delete(Long id) {
+        Customer customer = findById(id);
+        customerRepository.delete(customer);
+    }
 }

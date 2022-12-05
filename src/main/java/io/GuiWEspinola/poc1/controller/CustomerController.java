@@ -27,7 +27,7 @@ public class CustomerController {
     private ModelMapper mapper;
 
     @GetMapping
-    public ResponseEntity<List<CustomerResponseDTO>> getAll() {
+    public ResponseEntity<List<CustomerResponseDTO>> getAllCustomers() {
         List<Customer> responseDTOList = customerService.findAll();
         return ResponseEntity.ok().body(responseDTOList
                 .stream()
@@ -43,5 +43,11 @@ public class CustomerController {
     public ResponseEntity<CustomerResponseDTO> postCustomer(@RequestBody CustomerRequestDTO customerRequestDTO) {
         return ResponseEntity.status(CREATED)
                 .body(mapper.map(customerService.save(customerRequestDTO), CustomerResponseDTO.class));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCustomerById(@PathVariable Long id) {
+        customerService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

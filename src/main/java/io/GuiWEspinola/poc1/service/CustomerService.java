@@ -14,4 +14,6 @@ public interface CustomerService {
     Customer findById(Long id);
 
     Customer save(CustomerRequestDTO customerRequestDTO);
+
+    void delete (Long id);
 }
