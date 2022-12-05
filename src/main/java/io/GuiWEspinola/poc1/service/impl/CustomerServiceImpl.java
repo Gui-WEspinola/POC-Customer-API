@@ -41,4 +41,10 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = findById(id);
         customerRepository.delete(customer);
     }
+
+    @Override
+    public Customer update(CustomerRequestDTO customerRequestDTO) {
+        findById(customerRequestDTO.getId());
+        return customerRepository.save(mapper.map(customerRequestDTO, Customer.class));
+    }
 }

@@ -18,7 +18,9 @@ public class CustomerResponseDTO {
 
     private String email;
 
-    private PersonType personType;
+    private PersonType documentType;
+
+    private String documentNumber;
 
     private Integer mobileNumber;
 

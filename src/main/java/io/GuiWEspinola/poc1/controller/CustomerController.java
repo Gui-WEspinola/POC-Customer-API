@@ -3,6 +3,7 @@ package io.GuiWEspinola.poc1.controller;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponseDTO;
+import io.GuiWEspinola.poc1.service.CustomerService;
 import io.GuiWEspinola.poc1.service.impl.CustomerServiceImpl;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,7 +22,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class CustomerController {
 
     @Autowired
-    private CustomerServiceImpl customerService;
+    private CustomerService customerService;
 
     @Autowired
     private ModelMapper mapper;
@@ -49,5 +50,13 @@ public class CustomerController {
     public ResponseEntity<Void> deleteCustomerById(@PathVariable Long id) {
         customerService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CustomerResponseDTO> updateCustomer(@PathVariable Long id,
+                                                            @RequestBody CustomerRequestDTO customerRequestDTO) {
+        customerRequestDTO.setId(id);
+        return ResponseEntity.ok()
+                .body(mapper.map(customerService.update(customerRequestDTO), CustomerResponseDTO.class));
     }
 }

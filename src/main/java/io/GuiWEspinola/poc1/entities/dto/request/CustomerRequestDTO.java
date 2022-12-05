@@ -10,6 +10,8 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class CustomerRequestDTO {
 
+    private Long id;
+
     private String name;
 
     private String email;
