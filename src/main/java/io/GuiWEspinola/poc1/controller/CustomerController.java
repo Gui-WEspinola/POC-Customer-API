@@ -1,10 +1,11 @@
 package io.GuiWEspinola.poc1.controller;
 
+import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
+import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponseDTO;
 import io.GuiWEspinola.poc1.service.CustomerService;
-import io.GuiWEspinola.poc1.service.impl.CustomerServiceImpl;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -40,6 +40,14 @@ public class CustomerController {
         return ResponseEntity.ok().body(mapper.map(customerService.findById(id), CustomerResponseDTO.class));
     }
 
+    @GetMapping("/address/{id}")
+    public ResponseEntity<List<AddressResponseDTO>> getAllAddresses(@PathVariable Long id) {
+        List<Address> addressList = customerService.GetAllAddresses(id);
+        return ResponseEntity.ok().body(
+                addressList.stream().map(
+                        address -> mapper.map(address, AddressResponseDTO.class)).toList());
+    }
+
     @PostMapping
     public ResponseEntity<CustomerResponseDTO> postCustomer(@RequestBody CustomerRequestDTO customerRequestDTO) {
         return ResponseEntity.status(CREATED)
@@ -54,7 +62,7 @@ public class CustomerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CustomerResponseDTO> updateCustomer(@PathVariable Long id,
-                                                            @RequestBody CustomerRequestDTO customerRequestDTO) {
+                                                              @RequestBody CustomerRequestDTO customerRequestDTO) {
         customerRequestDTO.setId(id);
         return ResponseEntity.ok()
                 .body(mapper.map(customerService.update(customerRequestDTO), CustomerResponseDTO.class));

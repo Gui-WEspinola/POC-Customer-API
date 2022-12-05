@@ -8,11 +8,11 @@
 		<version>3.0.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>io.Gui-WEspinola</groupId>
+	<groupId>io.GuiWEspinola</groupId>
 	<artifactId>poc1</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>poc1</name>
-	<description>POC1 - </description>
+	<description>POC1 - Invillia Insiders</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>

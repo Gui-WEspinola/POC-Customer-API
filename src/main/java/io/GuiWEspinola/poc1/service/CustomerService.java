@@ -1,5 +1,6 @@
 package io.GuiWEspinola.poc1.service;
 
+import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
 import org.springframework.stereotype.Service;
@@ -18,4 +19,6 @@ public interface CustomerService {
     void delete (Long id);
 
     Customer update(CustomerRequestDTO customerRequestDTO);
+
+    List<Address> GetAllAddresses(Long id);
 }

@@ -24,5 +24,5 @@ public class CustomerResponseDTO {
 
     private Integer mobileNumber;
 
-    private List<Address> address = new ArrayList<>();
+    private List<AddressResponseDTO> address = new ArrayList<>();
 }

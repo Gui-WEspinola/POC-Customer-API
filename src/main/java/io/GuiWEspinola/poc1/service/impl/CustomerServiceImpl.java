@@ -1,5 +1,6 @@
 package io.GuiWEspinola.poc1.service.impl;
 
+import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
 import io.GuiWEspinola.poc1.repository.CustomerRepository;
@@ -46,5 +47,11 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer update(CustomerRequestDTO customerRequestDTO) {
         findById(customerRequestDTO.getId());
         return customerRepository.save(mapper.map(customerRequestDTO, Customer.class));
+    }
+
+    @Override
+    public List<Address> GetAllAddresses(Long id) {
+        var customer = findById(id);
+        return customer.getAddress();
     }
 }
