@@ -1,6 +1,7 @@
 package io.GuiWEspinola.poc1.service;
 
 import io.GuiWEspinola.poc1.entities.Customer;
+import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface CustomerService {
 
     Customer findById(Long id);
 
-    void create(Customer customer);
+    Customer save(CustomerRequestDTO customerRequestDTO);
 }

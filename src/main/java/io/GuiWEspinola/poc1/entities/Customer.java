@@ -1,7 +1,9 @@
 package io.GuiWEspinola.poc1.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.GuiWEspinola.poc1.enums.PersonType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,11 +13,12 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tb_customer")
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "customer_name")
@@ -24,8 +27,8 @@ public class Customer {
     @Column
     private String email;
 
-    @Column(name = "person_type")
-    private PersonType personType;
+    @Column
+    private PersonType documentType;
 
     @Column
     private String documentNumber;
@@ -34,6 +37,6 @@ public class Customer {
     private Integer mobileNumber;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Column
+    @JsonIgnore
     private List<Address> address = new ArrayList<>();
 }
