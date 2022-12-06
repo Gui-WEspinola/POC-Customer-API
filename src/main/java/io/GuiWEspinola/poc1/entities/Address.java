@@ -1,5 +1,6 @@
 package io.GuiWEspinola.poc1.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +29,9 @@ public class Address {
     private String zipCode;
 
     private String state;
+
+    @JsonIgnore
+    private Boolean mainAddress;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")

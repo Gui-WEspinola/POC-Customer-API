@@ -20,5 +20,5 @@ public interface CustomerService {
 
     Customer update(CustomerRequestDTO customerRequestDTO);
 
-    List<Address> GetAllAddresses(Long id);
+    List<Address> getAllAddresses(Long id);
 }

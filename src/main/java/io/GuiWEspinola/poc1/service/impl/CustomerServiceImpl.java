@@ -29,7 +29,6 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer findById(Long id) {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CustomerNotFoundException goes here"));
-
     }
 
     @Override
@@ -50,7 +49,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Address> GetAllAddresses(Long id) {
+    public List<Address> getAllAddresses(Long id) {
         var customer = findById(id);
         return customer.getAddress();
     }

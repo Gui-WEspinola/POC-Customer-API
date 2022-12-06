@@ -23,4 +23,6 @@ public class AddressResponseDTO {
     private String zipCode;
 
     private String state;
+
+    private Boolean mainAddress;
 }

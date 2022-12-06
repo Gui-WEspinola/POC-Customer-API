@@ -1,6 +1,5 @@
 package io.GuiWEspinola.poc1.entities.dto.request;
 
-import io.GuiWEspinola.poc1.entities.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +22,8 @@ public class AddressRequestDTO {
     private String zipCode;
 
     private String state;
+
+    private Boolean mainAddress = false;
 
     private CustomerRequestDTO customerRequestDTO;
 }

@@ -42,7 +42,7 @@ public class CustomerController {
 
     @GetMapping("/address/{id}")
     public ResponseEntity<List<AddressResponseDTO>> getAllAddresses(@PathVariable Long id) {
-        List<Address> addressList = customerService.GetAllAddresses(id);
+        List<Address> addressList = customerService.getAllAddresses(id);
         return ResponseEntity.ok().body(
                 addressList.stream().map(
                         address -> mapper.map(address, AddressResponseDTO.class)).toList());
