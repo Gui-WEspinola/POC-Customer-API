@@ -30,13 +30,9 @@ public class AddressController {
 
     @PostMapping
     public ResponseEntity<AddressResponseDTO> createAddress(@RequestBody AddressRequestDTO addressRequestDTO) {
-        var customer = customerService.findById(addressRequestDTO.getCustomerRequestDTO().getId());
-        if (customer.getAddress().isEmpty()) {
-            addressRequestDTO.setMainAddress(true);
-        }
         return ResponseEntity.status(CREATED).body(mapper.map(
                 addressService.save(addressRequestDTO), AddressResponseDTO.class));
-    } // TODO Fazer a separação de customer do AddressService e do CustomerController
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<AddressResponseDTO> getAddressById(@PathVariable Long id) {
@@ -44,12 +40,16 @@ public class AddressController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAddressById(@PathVariable Long id) {
+    public ResponseEntity deleteAddress(@PathVariable Long id) {
         addressService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
-    // TODO PUT mapping
-
-
+    @PutMapping("/{id}")
+    public ResponseEntity<AddressResponseDTO> update(@PathVariable Long id,
+                                                     @RequestBody AddressRequestDTO addressRequestDTO){
+        addressRequestDTO.setId(id);
+        return ResponseEntity.accepted().body(mapper.map(
+                addressService.update(addressRequestDTO), AddressResponseDTO.class));
+    }
 }

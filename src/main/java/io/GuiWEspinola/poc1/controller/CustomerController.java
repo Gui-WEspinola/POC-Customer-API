@@ -42,10 +42,7 @@ public class CustomerController {
 
     @GetMapping("/address/{id}")
     public ResponseEntity<List<AddressResponseDTO>> getAllAddresses(@PathVariable Long id) {
-        List<Address> addressList = customerService.getAllAddresses(id);
-        return ResponseEntity.ok().body(
-                addressList.stream().map(
-                        address -> mapper.map(address, AddressResponseDTO.class)).toList());
+        return ResponseEntity.ok().body(customerService.getAllAddresses(id));
     }
 
     @PostMapping
@@ -64,7 +61,7 @@ public class CustomerController {
     public ResponseEntity<CustomerResponseDTO> updateCustomer(@PathVariable Long id,
                                                               @RequestBody CustomerRequestDTO customerRequestDTO) {
         customerRequestDTO.setId(id);
-        return ResponseEntity.ok()
+        return ResponseEntity.accepted()
                 .body(mapper.map(customerService.update(customerRequestDTO), CustomerResponseDTO.class));
     }
 }

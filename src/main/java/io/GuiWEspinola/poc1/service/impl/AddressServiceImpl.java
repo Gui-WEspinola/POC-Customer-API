@@ -27,7 +27,10 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public Address save(AddressRequestDTO addressRequestDTO) {
-        customerService.findById(addressRequestDTO.getCustomerRequestDTO().getId()); // Customer ID validation
+        var customer = customerService.findById(addressRequestDTO.getCustomerRequestDTO().getId());
+        if (customer.getAddress().isEmpty()) {
+            addressRequestDTO.setMainAddress(true);
+        }
         return addressRepository.save(mapper.map(addressRequestDTO, Address.class));
     }
 
@@ -37,10 +40,23 @@ public class AddressServiceImpl implements AddressService {
                 .orElseThrow(() -> new RuntimeException("AddressNotFoundException goes here"));
     }
 
+    @Override // TODO Update da forma tradicional
+    @Transactional
+    public Address update(AddressRequestDTO addressRequestDTO) {
+        existsById(addressRequestDTO.getId());
+        return addressRepository.save(mapper.map(addressRequestDTO, Address.class));
+    }
+
     @Override
     @Transactional
     public void delete(Long id) {
-        Address address = findById(id);
-        addressRepository.delete(address);
+        addressRepository.delete(findById(id));
+    }
+
+    @Override
+    public void existsById(Long id) {
+        if (!addressRepository.existsById(id)){
+            throw new RuntimeException("CustomerNotFoundException goes here");
+        }
     }
 }
