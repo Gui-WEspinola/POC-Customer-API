@@ -4,6 +4,7 @@ import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
 import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
+import io.GuiWEspinola.poc1.exception.CustomerNotFoundException;
 import io.GuiWEspinola.poc1.repository.CustomerRepository;
 import io.GuiWEspinola.poc1.service.CustomerService;
 import org.modelmapper.ModelMapper;
@@ -30,7 +31,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer findById(Long id) {
         return customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CustomerNotFoundException goes here"));
+                .orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     @Override
@@ -63,7 +64,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void existsById(Long id) {
         if (!customerRepository.existsById(id)){
-            throw new RuntimeException("CustomerNotFoundException goes here");
+            throw new CustomerNotFoundException(id);
         }
     }
 }

@@ -1,6 +1,5 @@
 package io.GuiWEspinola.poc1.controller;
 
-import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.dto.request.AddressRequestDTO;
 import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
 import io.GuiWEspinola.poc1.service.AddressService;
@@ -8,7 +7,6 @@ import io.GuiWEspinola.poc1.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,9 +45,9 @@ public class AddressController {
 
     @PutMapping("/{id}")
     public ResponseEntity<AddressResponseDTO> update(@PathVariable Long id,
-                                                     @RequestBody AddressRequestDTO addressRequestDTO){
+                                                     @RequestBody AddressRequestDTO addressRequestDTO) {
         addressRequestDTO.setId(id);
-        return ResponseEntity.accepted().body(mapper.map(
-                addressService.update(addressRequestDTO), AddressResponseDTO.class));
+        return ResponseEntity.accepted()
+                .body(mapper.map(addressService.update(addressRequestDTO), AddressResponseDTO.class));
     }
 }

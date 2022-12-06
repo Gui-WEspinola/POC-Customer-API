@@ -2,6 +2,7 @@ package io.GuiWEspinola.poc1.service.impl;
 
 import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.dto.request.AddressRequestDTO;
+import io.GuiWEspinola.poc1.exception.AddressNotFoundException;
 import io.GuiWEspinola.poc1.repository.AddressRepository;
 import io.GuiWEspinola.poc1.service.AddressService;
 import io.GuiWEspinola.poc1.service.CustomerService;
@@ -36,11 +37,10 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address findById(Long id) {
-        return addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("AddressNotFoundException goes here"));
+        return addressRepository.findById(id).orElseThrow(() -> new AddressNotFoundException(id));
     }
 
-    @Override // TODO Update da forma tradicional
+    @Override
     @Transactional
     public Address update(AddressRequestDTO addressRequestDTO) {
         existsById(addressRequestDTO.getId());
@@ -56,7 +56,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public void existsById(Long id) {
         if (!addressRepository.existsById(id)){
-            throw new RuntimeException("CustomerNotFoundException goes here");
+            throw new AddressNotFoundException(id);
         }
     }
 }
