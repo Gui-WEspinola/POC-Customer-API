@@ -13,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
 public class AddressServiceImpl implements AddressService {
 
@@ -60,13 +57,13 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public void existsById(Long id) {
-        if (!addressRepository.existsById(id)){
+        if (!addressRepository.existsById(id)) {
             throw new AddressNotFoundException(id);
         }
     }
 
     public void checkMaximumAddressLimit(Customer customer) {
-        if (customer.getAddress().size() == 5) {
+        if (customer.getAddress().size() >= 5) {
             throw new AddressMaxLimitException(customer.getId());
         }
     }

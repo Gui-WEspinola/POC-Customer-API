@@ -36,7 +36,7 @@ public class Customer {
     @Column
     private Integer mobileNumber;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Address> address = new ArrayList<>();
 }

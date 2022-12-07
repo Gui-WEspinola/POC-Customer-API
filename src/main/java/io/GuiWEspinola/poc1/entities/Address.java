@@ -33,7 +33,7 @@ public class Address {
     @JsonIgnore
     private Boolean mainAddress;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 }

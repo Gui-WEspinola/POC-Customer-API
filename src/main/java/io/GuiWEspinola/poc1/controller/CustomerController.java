@@ -18,7 +18,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "poc1-api/customer")
+@RequestMapping(path = "poc1/api/customers")
 public class CustomerController {
 
     @Autowired
@@ -40,7 +40,7 @@ public class CustomerController {
         return ResponseEntity.ok().body(mapper.map(customerService.findById(id), CustomerResponseDTO.class));
     }
 
-    @GetMapping("/address/{id}")
+    @GetMapping("/addresses/{id}")
     public ResponseEntity<List<AddressResponseDTO>> getAllAddresses(@PathVariable Long id) {
         return ResponseEntity.ok().body(customerService.getAllAddresses(id));
     }
