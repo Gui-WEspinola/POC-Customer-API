@@ -1,7 +1,9 @@
 package io.GuiWEspinola.poc1.service.impl;
 
 import io.GuiWEspinola.poc1.entities.Address;
+import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.AddressRequestDTO;
+import io.GuiWEspinola.poc1.exception.AddressMaxLimitException;
 import io.GuiWEspinola.poc1.exception.AddressNotFoundException;
 import io.GuiWEspinola.poc1.repository.AddressRepository;
 import io.GuiWEspinola.poc1.service.AddressService;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,6 +35,8 @@ public class AddressServiceImpl implements AddressService {
         if (customer.getAddress().isEmpty()) {
             addressRequestDTO.setMainAddress(true);
         }
+        checkMaximumAddressLimit(customer);
+
         return addressRepository.save(mapper.map(addressRequestDTO, Address.class));
     }
 
@@ -57,6 +62,12 @@ public class AddressServiceImpl implements AddressService {
     public void existsById(Long id) {
         if (!addressRepository.existsById(id)){
             throw new AddressNotFoundException(id);
+        }
+    }
+
+    public void checkMaximumAddressLimit(Customer customer) {
+        if (customer.getAddress().size() == 5) {
+            throw new AddressMaxLimitException(customer.getId());
         }
     }
 }

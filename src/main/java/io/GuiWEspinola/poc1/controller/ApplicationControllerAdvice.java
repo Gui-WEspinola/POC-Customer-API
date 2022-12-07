@@ -1,5 +1,6 @@
 package io.GuiWEspinola.poc1.controller;
 
+import io.GuiWEspinola.poc1.exception.AddressMaxLimitException;
 import io.GuiWEspinola.poc1.exception.AddressNotFoundException;
 import io.GuiWEspinola.poc1.exception.CustomerNotFoundException;
 import io.GuiWEspinola.poc1.exception.dto.ApiErrorsDTO;
@@ -18,11 +19,11 @@ public class ApplicationControllerAdvice {
 
     @ExceptionHandler(CustomerNotFoundException.class)
     public ResponseEntity<ApiErrorsDTO> customerNotFound(CustomerNotFoundException exception,
-                                                         HttpServletRequest httpServletRequest) {
+                                                         HttpServletRequest request) {
         var errorDTO = ApiErrorsDTO.builder()
                 .timestamp(LocalDateTime.now())
                 .message(exception.getMessage())
-                .path(httpServletRequest.getRequestURI())
+                .path(request.getRequestURI())
                 .httpStatus(NOT_FOUND.value()).build();
 
         return ResponseEntity.status(NOT_FOUND).body(errorDTO);
@@ -30,13 +31,25 @@ public class ApplicationControllerAdvice {
 
     @ExceptionHandler(AddressNotFoundException.class)
     public ResponseEntity<ApiErrorsDTO> addressNotFound(AddressNotFoundException exception,
-                                                        HttpServletRequest httpServletRequest) {
+                                                        HttpServletRequest request) {
         var errorDTO = ApiErrorsDTO.builder()
                 .timestamp(LocalDateTime.now())
                 .message(exception.getMessage())
-                .path(httpServletRequest.getRequestURI())
+                .path(request.getRequestURI())
                 .httpStatus(NOT_FOUND.value()).build();
 
         return ResponseEntity.status(NOT_FOUND).body(errorDTO);
+    }
+
+    @ExceptionHandler(AddressMaxLimitException.class)
+    public ResponseEntity<ApiErrorsDTO> addressMaxLimitExceeded(AddressMaxLimitException exception,
+                                                                HttpServletRequest request) {
+        var errorDTO = ApiErrorsDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .httpStatus(CONFLICT.value()).build();
+
+        return ResponseEntity.status(CONFLICT).body(errorDTO);
     }
 }
