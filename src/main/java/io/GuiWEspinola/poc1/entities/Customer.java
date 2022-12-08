@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.GuiWEspinola.poc1.enums.PersonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.br.CNPJ;
-import org.hibernate.validator.constraints.br.CPF;
-import org.springframework.format.annotation.NumberFormat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,18 +27,18 @@ public class Customer {
     private String name;
 
     @Column
-    @Email
+    @Email(message = "The e-mail you entered is either invalid or taken.")
     private String email;
 
     @Column
     private PersonType documentType;
 
-    @Column
-    @CPF
-    @CNPJ
+    //    @CPF(message = "Please enter a valid CPF.")
+//    @CNPJ(message = "Please enter a valid CNPJ.")
     private String documentNumber;
 
-    @Column
+    @Column(length = 15)
+    @NotNull(message = "Please enter a phone number.")
     private Integer mobileNumber;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

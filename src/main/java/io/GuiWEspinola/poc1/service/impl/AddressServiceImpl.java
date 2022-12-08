@@ -28,10 +28,10 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public Address save(AddressRequestDTO addressRequestDTO) {
-        var customer = customerService.findById(addressRequestDTO.getCustomerRequestDTO().getId());
-        if (customer.getAddress().isEmpty()) {
-            addressRequestDTO.setMainAddress(true);
-        }
+        var customer = customerService.findById(addressRequestDTO.getCustomer().getId());
+
+        addressRequestDTO.setMainAddress(customer.getAddress().isEmpty());
+
         checkMaximumAddressLimit(customer);
 
         return addressRepository.save(mapper.map(addressRequestDTO, Address.class));
@@ -44,9 +44,31 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional
-    public Address update(AddressRequestDTO addressRequestDTO) {
-        existsById(addressRequestDTO.getId());
-        return addressRepository.save(mapper.map(addressRequestDTO, Address.class));
+    public Address update(AddressRequestDTO addressRequestDTO, Long id) {
+        Address address = findById(id);
+
+        address.setAddressNumber(addressRequestDTO.getAddressNumber());
+        address.setDistrict(addressRequestDTO.getDistrict());
+        address.setState(addressRequestDTO.getState());
+        address.setStreet(addressRequestDTO.getStreet());
+        address.setZipCode(addressRequestDTO.getZipCode());
+        address.setCity(addressRequestDTO.getCity());
+
+        return addressRepository.save(address);
+    }
+
+    @Override
+    public Address updateMainAddress(Long id) {
+        Address address = findById(id);
+
+        address.getCustomer().getAddress()
+                .forEach(a -> {
+                    a.setMainAddress(false);
+                    addressRepository.save(a);});
+
+        address.setMainAddress(true);
+
+        return addressRepository.save(address);
     }
 
     @Override

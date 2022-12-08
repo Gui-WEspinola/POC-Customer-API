@@ -3,8 +3,10 @@ package io.GuiWEspinola.poc1.controller;
 import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
+import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequestDTO;
 import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponseDTO;
+import io.GuiWEspinola.poc1.entities.dto.response.CustomerUpdateResponseDTO;
 import io.GuiWEspinola.poc1.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -58,10 +60,10 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerResponseDTO> updateCustomer(@PathVariable Long id,
-                                                              @RequestBody CustomerRequestDTO customerRequestDTO) {
-        customerRequestDTO.setId(id);
+    public ResponseEntity<CustomerUpdateResponseDTO> updateCustomer
+            (@PathVariable Long id, @RequestBody CustomerUpdateRequestDTO customerRequestDTO) {
+
         return ResponseEntity.accepted()
-                .body(mapper.map(customerService.update(customerRequestDTO), CustomerResponseDTO.class));
+                .body(mapper.map(customerService.update(customerRequestDTO, id), CustomerUpdateResponseDTO.class));
     }
 }

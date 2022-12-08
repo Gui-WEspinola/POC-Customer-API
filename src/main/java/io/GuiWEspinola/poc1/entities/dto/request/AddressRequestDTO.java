@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AddressRequestDTO {
 
-    private Long id;
-
     private String street;
 
-    private Integer addressNumber;
+    private String addressNumber;
 
     private String district;
 
@@ -23,7 +21,7 @@ public class AddressRequestDTO {
 
     private String state;
 
-    private Boolean mainAddress = false;
+    private Boolean mainAddress;
 
-    private CustomerRequestDTO customerRequestDTO;
+    private CustomerIdRequestDTO customer;
 }

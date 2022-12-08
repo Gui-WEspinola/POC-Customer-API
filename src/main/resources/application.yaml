@@ -1,7 +1,7 @@
 spring:
   jpa:
+    show-sql: true
     properties:
-      show-sql: true
       format_sql: true
     database: MYSQL
     hibernate:
@@ -11,10 +11,6 @@ spring:
     url: ${URL}
     username: ${USER}
     password: ${PASSWORD}
-
-  properties:
-    show-sql: true
-    format_sql: true
 
   main:
     banner-mode: off

@@ -2,6 +2,7 @@ package io.GuiWEspinola.poc1.controller;
 
 import io.GuiWEspinola.poc1.entities.dto.request.AddressRequestDTO;
 import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
+import io.GuiWEspinola.poc1.entities.dto.response.MainAddressUpdateResponseDTO;
 import io.GuiWEspinola.poc1.service.AddressService;
 import io.GuiWEspinola.poc1.service.CustomerService;
 import lombok.AllArgsConstructor;
@@ -38,16 +39,21 @@ public class AddressController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteAddress(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAddress(@PathVariable Long id) {
         addressService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AddressResponseDTO> update(@PathVariable Long id,
+    public ResponseEntity<AddressResponseDTO> updateAddress(@PathVariable Long id,
                                                      @RequestBody AddressRequestDTO addressRequestDTO) {
-        addressRequestDTO.setId(id);
         return ResponseEntity.accepted()
-                .body(mapper.map(addressService.update(addressRequestDTO), AddressResponseDTO.class));
+                .body(mapper.map(addressService.update(addressRequestDTO, id), AddressResponseDTO.class));
+    }
+
+    @PatchMapping("/main-address/{id}")
+    public ResponseEntity<MainAddressUpdateResponseDTO> updateMainAddress (@PathVariable Long id) {
+        return ResponseEntity.accepted()
+                .body(mapper.map(addressService.updateMainAddress(id), MainAddressUpdateResponseDTO.class));
     }
 }

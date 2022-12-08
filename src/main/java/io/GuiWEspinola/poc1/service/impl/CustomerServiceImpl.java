@@ -1,8 +1,8 @@
 package io.GuiWEspinola.poc1.service.impl;
 
-import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
+import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequestDTO;
 import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
 import io.GuiWEspinola.poc1.exception.CustomerNotFoundException;
 import io.GuiWEspinola.poc1.repository.CustomerRepository;
@@ -35,6 +35,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Transactional
     public Customer save(CustomerRequestDTO customerRequestDTO) {
         return customerRepository.save(mapper.map(customerRequestDTO, Customer.class));
     }
@@ -48,9 +49,14 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public Customer update(CustomerRequestDTO customerRequestDTO) {
-        existsById(customerRequestDTO.getId());
-        return customerRepository.save(mapper.map(customerRequestDTO, Customer.class));
+    public Customer update(CustomerUpdateRequestDTO customerRequestDTO, Long id) {
+        Customer customer = findById(id);
+
+        customer.setName(customerRequestDTO.getName());
+        customer.setEmail(customerRequestDTO.getEmail());
+        customer.setMobileNumber(customerRequestDTO.getMobileNumber());
+
+        return customerRepository.save(customer);
     }
 
     @Override
@@ -59,12 +65,5 @@ public class CustomerServiceImpl implements CustomerService {
                 .stream()
                 .map(address -> mapper.map(address, AddressResponseDTO.class))
                 .toList();
-    }
-
-    @Override
-    public void existsById(Long id) {
-        if (!customerRepository.existsById(id)){
-            throw new CustomerNotFoundException(id);
-        }
     }
 }

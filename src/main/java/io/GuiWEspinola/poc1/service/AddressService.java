@@ -13,8 +13,10 @@ public interface AddressService {
 
     void delete(Long id);
 
-    Address update(AddressRequestDTO addressRequestDTO);
+    Address update(AddressRequestDTO addressRequestDTO, Long id);
 
     void existsById(Long id);
+
+    Address updateMainAddress(Long id);
 
 }

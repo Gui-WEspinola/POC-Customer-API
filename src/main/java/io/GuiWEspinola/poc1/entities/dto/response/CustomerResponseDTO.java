@@ -1,11 +1,9 @@
 package io.GuiWEspinola.poc1.entities.dto.response;
 
-import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.enums.PersonType;
-import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -23,6 +21,4 @@ public class CustomerResponseDTO {
     private String documentNumber;
 
     private Integer mobileNumber;
-
-    private List<AddressResponseDTO> address = new ArrayList<>();
 }
