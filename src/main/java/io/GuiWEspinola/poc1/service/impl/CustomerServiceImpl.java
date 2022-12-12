@@ -5,6 +5,8 @@ import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequestDTO;
 import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
 import io.GuiWEspinola.poc1.exception.CustomerNotFoundException;
+import io.GuiWEspinola.poc1.exception.DocumentInUseException;
+import io.GuiWEspinola.poc1.exception.ExistingEmailException;
 import io.GuiWEspinola.poc1.repository.CustomerRepository;
 import io.GuiWEspinola.poc1.service.CustomerService;
 import org.modelmapper.ModelMapper;
@@ -37,6 +39,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public Customer save(CustomerRequestDTO customerRequestDTO) {
+        documentNumberFilter(customerRequestDTO);
+        if (existsByEmail(customerRequestDTO.getEmail())) {
+            throw new ExistingEmailException(customerRequestDTO.getEmail());
+        }
+        if (existsByDocumentNumber(customerRequestDTO.getDocumentNumber())) {
+            throw new DocumentInUseException(customerRequestDTO.getDocumentNumber());
+        }
+
         return customerRepository.save(mapper.map(customerRequestDTO, Customer.class));
     }
 
@@ -65,5 +75,22 @@ public class CustomerServiceImpl implements CustomerService {
                 .stream()
                 .map(address -> mapper.map(address, AddressResponseDTO.class))
                 .toList();
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return customerRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByDocumentNumber(String document) {
+        return customerRepository.existsByDocumentNumber(document);
+    }
+
+    private static void documentNumberFilter(CustomerRequestDTO customerRequestDTO) {
+        customerRequestDTO.setDocumentNumber(customerRequestDTO.getDocumentNumber()
+                .replace(".", "")
+                .replace("/", "")
+                .replace("-", ""));
     }
 }

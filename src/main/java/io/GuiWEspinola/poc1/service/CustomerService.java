@@ -1,6 +1,5 @@
 package io.GuiWEspinola.poc1.service;
 
-import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequestDTO;
@@ -18,9 +17,13 @@ public interface CustomerService {
 
     Customer save(CustomerRequestDTO customerRequestDTO);
 
-    void delete (Long id);
+    void delete(Long id);
 
     Customer update(CustomerUpdateRequestDTO requestDTO, Long id);
 
     List<AddressResponseDTO> getAllAddresses(Long id);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByDocumentNumber(String document);
 }

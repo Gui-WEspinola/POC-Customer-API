@@ -8,6 +8,7 @@ import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponseDTO;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerUpdateResponseDTO;
 import io.GuiWEspinola.poc1.service.CustomerService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,9 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping(path = "poc1/api/customers")
 public class CustomerController {
 
-    @Autowired
-    private CustomerService customerService;
+    private final CustomerService customerService;
 
-    @Autowired
-    private ModelMapper mapper;
+    private final ModelMapper mapper;
 
     @GetMapping
     public ResponseEntity<List<CustomerResponseDTO>> getAllCustomers() {
@@ -48,7 +47,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomerResponseDTO> postCustomer(@RequestBody CustomerRequestDTO customerRequestDTO) {
+    public ResponseEntity<CustomerResponseDTO> postCustomer(@RequestBody @Valid CustomerRequestDTO customerRequestDTO) {
         return ResponseEntity.status(CREATED)
                 .body(mapper.map(customerService.save(customerRequestDTO), CustomerResponseDTO.class));
     }

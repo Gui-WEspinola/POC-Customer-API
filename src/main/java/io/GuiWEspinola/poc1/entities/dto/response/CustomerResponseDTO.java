@@ -1,6 +1,6 @@
 package io.GuiWEspinola.poc1.entities.dto.response;
 
-import io.GuiWEspinola.poc1.enums.PersonType;
+import io.GuiWEspinola.poc1.enums.DocumentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ public class CustomerResponseDTO {
 
     private String email;
 
-    private PersonType documentType;
+    private DocumentType documentType;
 
     private String documentNumber;
 

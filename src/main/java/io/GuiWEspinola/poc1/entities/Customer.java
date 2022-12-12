@@ -1,13 +1,13 @@
 package io.GuiWEspinola.poc1.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.GuiWEspinola.poc1.enums.PersonType;
+import io.GuiWEspinola.poc1.enums.DocumentType;
+import io.GuiWEspinola.poc1.validation.CustomerSequenceProvider;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.group.GroupSequenceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,21 +27,18 @@ public class Customer {
     private String name;
 
     @Column
-    @Email(message = "The e-mail you entered is either invalid or taken.")
     private String email;
 
     @Column
-    private PersonType documentType;
+    private DocumentType documentType;
 
-    //    @CPF(message = "Please enter a valid CPF.")
-//    @CNPJ(message = "Please enter a valid CNPJ.")
+    @Column
     private String documentNumber;
 
     @Column(length = 15)
-    @NotNull(message = "Please enter a phone number.")
     private Integer mobileNumber;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Address> address = new ArrayList<>();
 }
