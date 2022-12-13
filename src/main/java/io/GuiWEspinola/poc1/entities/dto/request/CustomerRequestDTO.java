@@ -1,14 +1,12 @@
 package io.GuiWEspinola.poc1.entities.dto.request;
 
 import io.GuiWEspinola.poc1.enums.DocumentType;
+import io.GuiWEspinola.poc1.validation.CustomerSequenceProvider;
 import io.GuiWEspinola.poc1.validation.groupValidation.CnpjGroup;
 import io.GuiWEspinola.poc1.validation.groupValidation.CpfGroup;
-import io.GuiWEspinola.poc1.validation.CustomerSequenceProvider;
-import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

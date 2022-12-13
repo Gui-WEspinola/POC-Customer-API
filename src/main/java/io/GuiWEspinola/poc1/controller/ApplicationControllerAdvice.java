@@ -1,15 +1,13 @@
 package io.GuiWEspinola.poc1.controller;
 
-import io.GuiWEspinola.poc1.exception.AddressMaxLimitException;
-import io.GuiWEspinola.poc1.exception.AddressNotFoundException;
-import io.GuiWEspinola.poc1.exception.CustomerNotFoundException;
-import io.GuiWEspinola.poc1.exception.ExistingEmailException;
+import io.GuiWEspinola.poc1.exception.*;
 import io.GuiWEspinola.poc1.exception.dto.ApiErrorsDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -86,5 +84,35 @@ public class ApplicationControllerAdvice {
                 .httpStatus(CONFLICT.value()).build();
 
         return ResponseEntity.status(CONFLICT).body(errorDTO);
+    }
+
+    @ExceptionHandler(DocumentInUseException.class)
+    public ResponseEntity<ApiErrorsDTO> documentRegisteredHandler(DocumentInUseException exception,
+                                                                  HttpServletRequest request) {
+        var errorDTO = ApiErrorsDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .httpStatus(CONFLICT.value()).build();
+
+        return ResponseEntity.status(CONFLICT).body(errorDTO);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<List<ApiErrorsDTO>> argumentExceptionHandler(MethodArgumentNotValidException exception,
+                                                                       HttpServletRequest request) {
+        List<ApiErrorsDTO> errorsDTOList = new ArrayList<>();
+        var fieldErrorList = exception.getFieldErrors();
+
+        fieldErrorList.forEach(e -> {
+            var errorDTO = ApiErrorsDTO.builder()
+                    .message(e.getDefaultMessage())
+                    .httpStatus(BAD_REQUEST.value())
+                    .path(request.getRequestURI())
+                    .timestamp(LocalDateTime.now()).build();
+
+            errorsDTOList.add(errorDTO);
+        });
+        return ResponseEntity.status(BAD_REQUEST).body(errorsDTOList);
     }
 }
