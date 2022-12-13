@@ -24,7 +24,7 @@ import org.hibernate.validator.group.GroupSequenceProvider;
 public class CustomerRequestDTO {
 
     @NotBlank(message = "Name is a required field.")
-    @Pattern(regexp = "^([a-zA-Z]*)(\\s([a-zA-Z]*))*$")
+    @Pattern(regexp = "^([a-zA-Z]*)(\\s([a-zA-Z]*))*$", message = "Name")
     private String name;
 
     @Email(message = "Please enter a valid e-mail.")
@@ -38,8 +38,10 @@ public class CustomerRequestDTO {
     @CPF(groups = CpfGroup.class)
     @CNPJ(groups = CnpjGroup.class)
     @NotBlank(message = "CPF/CNPJ is a required field.")
+    @Pattern(regexp = "(^\\d{3}.\\d{3}.\\d{3}-\\d{2}$)|(^\\d{2}.\\d{3}.\\d{3}/\\d{4}-\\d{2}$)")
     private String documentNumber;
 
     @NotNull(message = "Mobile number is a required field.")
+    // TODO validation for mobile number
     private Integer mobileNumber;
 }
