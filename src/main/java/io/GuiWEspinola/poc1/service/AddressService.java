@@ -15,8 +15,6 @@ public interface AddressService {
 
     Address update(AddressRequestDTO addressRequestDTO, Long id);
 
-    void existsById(Long id);
-
     Address updateMainAddress(Long id);
 
 }

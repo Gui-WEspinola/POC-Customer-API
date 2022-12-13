@@ -1,6 +1,5 @@
 package io.GuiWEspinola.poc1.controller;
 
-import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequestDTO;
@@ -11,7 +10,6 @@ import io.GuiWEspinola.poc1.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

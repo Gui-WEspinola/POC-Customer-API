@@ -5,6 +5,7 @@ import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.AddressRequestDTO;
 import io.GuiWEspinola.poc1.exception.AddressMaxLimitException;
 import io.GuiWEspinola.poc1.exception.AddressNotFoundException;
+import io.GuiWEspinola.poc1.exception.MainAddressDeleteException;
 import io.GuiWEspinola.poc1.repository.AddressRepository;
 import io.GuiWEspinola.poc1.service.AddressService;
 import io.GuiWEspinola.poc1.service.CustomerService;
@@ -67,21 +68,16 @@ public class AddressServiceImpl implements AddressService {
                     addressRepository.save(a);});
 
         address.setMainAddress(true);
-
         return addressRepository.save(address);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        addressRepository.delete(findById(id));
-    }
-
-    @Override
-    public void existsById(Long id) {
-        if (!addressRepository.existsById(id)) {
-            throw new AddressNotFoundException(id);
+        if (Boolean.TRUE.equals(findById(id).getMainAddress())) {
+            throw new MainAddressDeleteException();
         }
+        addressRepository.delete(findById(id));
     }
 
     public void checkMaximumAddressLimit(Customer customer) {

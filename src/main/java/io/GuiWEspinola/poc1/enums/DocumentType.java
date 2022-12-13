@@ -5,8 +5,8 @@ import io.GuiWEspinola.poc1.validation.groupValidation.CpfGroup;
 
 public enum DocumentType {
 
-    PF("CPF", "000.000.000-00", CpfGroup.class),
-    PJ("CNPJ", "00.000.000/0000-00", CnpjGroup.class);
+    CPF ("CPF", "000.000.000-00", CpfGroup.class),
+    CNPJ ("CNPJ", "00.000.000/0000-00", CnpjGroup.class);
 
     private final String document;
     private final String mask;

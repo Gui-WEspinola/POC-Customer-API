@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -23,6 +24,7 @@ import org.hibernate.validator.group.GroupSequenceProvider;
 public class CustomerRequestDTO {
 
     @NotBlank(message = "Name is a required field.")
+    @Pattern(regexp = "^([a-zA-Z]*)(\\s([a-zA-Z]*))*$")
     private String name;
 
     @Email(message = "Please enter a valid e-mail.")
@@ -30,6 +32,7 @@ public class CustomerRequestDTO {
     private String email;
 
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Enter the document Type (CPF/CNPJ)")
     private DocumentType documentType;
 
     @CPF(groups = CpfGroup.class)

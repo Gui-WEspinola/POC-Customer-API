@@ -46,13 +46,13 @@ public class AddressController {
 
     @PutMapping("/{id}")
     public ResponseEntity<AddressResponseDTO> updateAddress(@PathVariable Long id,
-                                                     @RequestBody AddressRequestDTO addressRequestDTO) {
+                                                            @RequestBody AddressRequestDTO addressRequestDTO) {
         return ResponseEntity.accepted()
                 .body(mapper.map(addressService.update(addressRequestDTO, id), AddressResponseDTO.class));
     }
 
     @PatchMapping("/main-address/{id}")
-    public ResponseEntity<MainAddressUpdateResponseDTO> updateMainAddress (@PathVariable Long id) {
+    public ResponseEntity<MainAddressUpdateResponseDTO> updateMainAddress(@PathVariable Long id) {
         return ResponseEntity.accepted()
                 .body(mapper.map(addressService.updateMainAddress(id), MainAddressUpdateResponseDTO.class));
     }

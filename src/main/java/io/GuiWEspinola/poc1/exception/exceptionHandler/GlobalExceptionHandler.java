@@ -1,12 +1,11 @@
-package io.GuiWEspinola.poc1.controller;
+package io.GuiWEspinola.poc1.exception.exceptionHandler;
 
 import io.GuiWEspinola.poc1.exception.*;
 import io.GuiWEspinola.poc1.exception.dto.ApiErrorsDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,11 +17,11 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
-public class ApplicationControllerAdvice {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<ApiErrorsDTO> customerNotFound(CustomerNotFoundException exception,
-                                                         HttpServletRequest request) {
+    public ResponseEntity<ApiErrorsDTO> customerNotFoundExceptionHandler(CustomerNotFoundException exception,
+                                                                         HttpServletRequest request) {
         var errorDTO = ApiErrorsDTO.builder()
                 .timestamp(LocalDateTime.now())
                 .message(exception.getMessage())
@@ -33,8 +32,8 @@ public class ApplicationControllerAdvice {
     }
 
     @ExceptionHandler(AddressNotFoundException.class)
-    public ResponseEntity<ApiErrorsDTO> addressNotFound(AddressNotFoundException exception,
-                                                        HttpServletRequest request) {
+    public ResponseEntity<ApiErrorsDTO> addressNotFoundExceptionHandler(AddressNotFoundException exception,
+                                                                        HttpServletRequest request) {
         var errorDTO = ApiErrorsDTO.builder()
                 .timestamp(LocalDateTime.now())
                 .message(exception.getMessage())
@@ -51,6 +50,18 @@ public class ApplicationControllerAdvice {
                 .timestamp(LocalDateTime.now())
                 .message(exception.getMessage())
                 .path(request.getRequestURI())
+                .httpStatus(exception.getHttpStatus().value()).build();
+
+        return ResponseEntity.status(CONFLICT).body(errorDTO);
+    }
+
+    @ExceptionHandler(MainAddressDeleteException.class)
+    public ResponseEntity<ApiErrorsDTO> mainAddressDeleteExceptionHandler(MainAddressDeleteException exception,
+                                                                          HttpServletRequest request) {
+        var errorDTO = ApiErrorsDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
                 .httpStatus(CONFLICT.value()).build();
 
         return ResponseEntity.status(CONFLICT).body(errorDTO);
@@ -60,9 +71,9 @@ public class ApplicationControllerAdvice {
     public ResponseEntity<List<ApiErrorsDTO>> validationHandler(ConstraintViolationException exception,
                                                                 HttpServletRequest request) {
         List<ApiErrorsDTO> errorsDTOList = new ArrayList<>();
-        var fieldErrorList = exception.getConstraintViolations();
+        var constraintViolations = exception.getConstraintViolations();
 
-        fieldErrorList.forEach(e -> {
+        constraintViolations.forEach(e -> {
             var errorDTO = ApiErrorsDTO.builder()
                     .message(e.getMessage())
                     .httpStatus(BAD_REQUEST.value())
@@ -106,13 +117,27 @@ public class ApplicationControllerAdvice {
 
         fieldErrorList.forEach(e -> {
             var errorDTO = ApiErrorsDTO.builder()
+                    .timestamp(LocalDateTime.now())
                     .message(e.getDefaultMessage())
-                    .httpStatus(BAD_REQUEST.value())
-                    .path(request.getRequestURI())
-                    .timestamp(LocalDateTime.now()).build();
+                    .httpStatus(exception.getStatusCode().value())
+                    .path(request.getRequestURI()).build();
+
 
             errorsDTOList.add(errorDTO);
         });
         return ResponseEntity.status(BAD_REQUEST).body(errorsDTOList);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiErrorsDTO> httpMessageException(HttpMessageNotReadableException exception,
+                                                             HttpServletRequest request) {
+
+        var errorDTO = ApiErrorsDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .message(exception.getLocalizedMessage())
+                .httpStatus(BAD_REQUEST.value())
+                .path(request.getRequestURI()).build();
+
+        return ResponseEntity.status(BAD_REQUEST).body(errorDTO);
     }
 }
