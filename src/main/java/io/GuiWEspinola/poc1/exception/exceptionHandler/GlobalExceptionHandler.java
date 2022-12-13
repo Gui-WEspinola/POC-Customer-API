@@ -110,10 +110,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<ApiErrorsDTO>> argumentExceptionHandler(MethodArgumentNotValidException exception,
-                                                                       HttpServletRequest request) {
+    public ResponseEntity<List<ApiErrorsDTO>> methodArgumentExceptionHandler(MethodArgumentNotValidException exception,
+                                                                             HttpServletRequest request) {
         List<ApiErrorsDTO> errorsDTOList = new ArrayList<>();
-        var fieldErrorList = exception.getFieldErrors();
+        var fieldErrorList = exception.getBindingResult().getAllErrors();
 
         fieldErrorList.forEach(e -> {
             var errorDTO = ApiErrorsDTO.builder()
@@ -122,10 +122,9 @@ public class GlobalExceptionHandler {
                     .httpStatus(exception.getStatusCode().value())
                     .path(request.getRequestURI()).build();
 
-
             errorsDTOList.add(errorDTO);
         });
-        return ResponseEntity.status(BAD_REQUEST).body(errorsDTOList);
+        return ResponseEntity.status(exception.getStatusCode()).body(errorsDTOList);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
