@@ -36,6 +36,6 @@ public class Customer implements Serializable {
     private Integer mobileNumber;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Address> address = new ArrayList<>();
 }

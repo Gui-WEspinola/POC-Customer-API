@@ -13,5 +13,5 @@ public class CustomerUpdateResponseDTO {
 
     private String email;
 
-    private Integer mobileNumber;
+    private String mobileNumber;
 }
