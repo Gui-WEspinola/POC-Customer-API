@@ -25,7 +25,7 @@ public interface CustomerService {
 
     List<AddressResponseDTO> getAllAddresses(Long id);
 
-    boolean existsByEmail(String email);
+    void checksAvailableEmail(String email);
 
-    boolean existsByDocumentNumber(String document);
+    void checksDocumentNumber(String document);
 }

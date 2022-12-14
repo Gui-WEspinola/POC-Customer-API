@@ -21,7 +21,7 @@ public class AddressRequestDTO {
 
     private String state;
 
-    private Boolean mainAddress;
+    private Boolean isMainAddress;
 
     private CustomerIdRequestDTO customer;
 }

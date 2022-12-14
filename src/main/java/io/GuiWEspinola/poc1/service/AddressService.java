@@ -1,6 +1,7 @@
 package io.GuiWEspinola.poc1.service;
 
 import io.GuiWEspinola.poc1.entities.Address;
+import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.AddressRequestDTO;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +17,7 @@ public interface AddressService {
     Address update(AddressRequestDTO addressRequestDTO, Long id);
 
     Address updateMainAddress(Long id);
+
+    void checksMaximumAddressLimit(Customer customer);
 
 }

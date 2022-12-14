@@ -32,9 +32,9 @@ public class CustomerController {
 
     @GetMapping
     public ResponseEntity<Page<CustomerResponseDTO>> getAllCustomers(
-            @PageableDefault(size = 10, direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<Customer> responseDTOList = customerService.findAll(pageable);
-        return ResponseEntity.ok().body(responseDTOList.map(customer -> mapper.map(customer, CustomerResponseDTO.class)));
+            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = {"name"}) Pageable pageable) {
+        Page<Customer> customerPage = customerService.findAll(pageable);
+        return ResponseEntity.ok().body(customerPage.map(customer -> mapper.map(customer, CustomerResponseDTO.class)));
     }
 
     @GetMapping("/{id}")
@@ -61,7 +61,7 @@ public class CustomerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CustomerUpdateResponseDTO> updateCustomer
-            (@PathVariable Long id, @RequestBody CustomerUpdateRequestDTO customerRequestDTO) {
+            (@PathVariable Long id, @RequestBody @Valid CustomerUpdateRequestDTO customerRequestDTO) {
 
         return ResponseEntity.accepted()
                 .body(mapper.map(customerService.update(customerRequestDTO, id), CustomerUpdateResponseDTO.class));
