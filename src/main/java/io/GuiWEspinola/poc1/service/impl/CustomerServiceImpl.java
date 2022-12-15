@@ -87,7 +87,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .toList();
     }
 
-
+    @Override
     public void checksAvailableEmail(String email) {
         if (customerRepository.existsByEmail(email)){
             throw new ExistingEmailException(email);

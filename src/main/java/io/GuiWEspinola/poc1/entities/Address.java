@@ -32,7 +32,6 @@ public class Address {
 
     private String state;
 
-    @JsonIgnore
     private Boolean isMainAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)

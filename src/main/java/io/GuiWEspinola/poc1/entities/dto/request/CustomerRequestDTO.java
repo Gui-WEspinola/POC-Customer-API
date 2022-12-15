@@ -18,7 +18,6 @@ import org.hibernate.validator.constraints.br.CPF;
 import org.hibernate.validator.group.GroupSequenceProvider;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @GroupSequenceProvider(CustomerSequenceProvider.class)
 public class CustomerRequestDTO {
@@ -43,6 +42,5 @@ public class CustomerRequestDTO {
     private String documentNumber;
 
     @NotNull(message = "Mobile number is a required field.")
-    // TODO validation for mobile number
-    private Integer mobileNumber;
+    private String mobileNumber;
 }

@@ -65,7 +65,8 @@ public class AddressServiceImpl implements AddressService {
         address.getCustomer().getAddress()
                 .forEach(a -> {
                     a.setIsMainAddress(false);
-                    addressRepository.save(a);});
+                    addressRepository.save(a);
+                });
 
         address.setIsMainAddress(true);
         return addressRepository.save(address);

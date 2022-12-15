@@ -14,12 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @AllArgsConstructor
@@ -31,55 +30,58 @@ public class CustomerController {
     private final ModelMapper mapper;
 
     @GetMapping
-    public ResponseEntity<Page<CustomerResponseDTO>> getAllCustomers(
+    @ResponseStatus(OK)
+    public Page<CustomerResponseDTO> getAllCustomers(
             @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
             @RequestParam(required = false) String name) {
 
         if (name != null) {
             Page<Customer> page = customerService.findByCustomerName(name, pageable);
-            return ResponseEntity.ok().body(page.map(customer -> mapper.map(customer, CustomerResponseDTO.class)));
+            return page.map(customer -> mapper.map(customer, CustomerResponseDTO.class));
         } else {
             Page<Customer> page = customerService.findAll(pageable);
-            return ResponseEntity.ok().body(page.map(customer -> mapper.map(customer, CustomerResponseDTO.class)));
+            return page.map(customer -> mapper.map(customer, CustomerResponseDTO.class));
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerResponseDTO> getCustomerById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(mapper.map(customerService.findById(id), CustomerResponseDTO.class));
+    @ResponseStatus(OK)
+    public CustomerResponseDTO getCustomerById(@PathVariable Long id) {
+        return mapper.map(customerService.findById(id), CustomerResponseDTO.class);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<CustomerResponseDTO>> searchCustomerByName(
+    @ResponseStatus(OK)
+    public Page<CustomerResponseDTO> searchCustomerByName(
             @RequestParam String name,
-            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = "id") Pageable pageable){
+            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = "id") Pageable pageable) {
 
         var page = customerService.findCustomerNameContaining(name, pageable);
-        return ResponseEntity.ok().body(page.map(customer -> mapper.map(customer, CustomerResponseDTO.class)));
+        return page.map(customer -> mapper.map(customer, CustomerResponseDTO.class));
     }
 
     @GetMapping("/addresses/{id}")
-    public ResponseEntity<List<AddressResponseDTO>> getAllAddressesByCustomer(@PathVariable Long id) {
-        return ResponseEntity.ok().body(customerService.getAllAddresses(id));
+    @ResponseStatus(OK)
+    public List<AddressResponseDTO> getAllAddressesByCustomer(@PathVariable Long id) {
+        return customerService.getAllAddresses(id);
     }
 
     @PostMapping
-    public ResponseEntity<CustomerResponseDTO> postCustomer(@RequestBody @Valid CustomerRequestDTO customerRequestDTO) {
-        return ResponseEntity.status(CREATED)
-                .body(mapper.map(customerService.save(customerRequestDTO), CustomerResponseDTO.class));
+    @ResponseStatus(CREATED)
+    public CustomerResponseDTO postCustomer(@RequestBody @Valid CustomerRequestDTO customerRequestDTO) {
+        return mapper.map(customerService.save(customerRequestDTO), CustomerResponseDTO.class);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCustomerById(@PathVariable Long id) {
+    @ResponseStatus(NO_CONTENT)
+    public void deleteCustomerById(@PathVariable Long id) {
         customerService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerUpdateResponseDTO> updateCustomer
+    @ResponseStatus(ACCEPTED)
+    public CustomerUpdateResponseDTO updateCustomer
             (@PathVariable Long id, @RequestBody @Valid CustomerUpdateRequestDTO customerRequestDTO) {
-
-        return ResponseEntity.accepted()
-                .body(mapper.map(customerService.update(customerRequestDTO, id), CustomerUpdateResponseDTO.class));
+        return mapper.map(customerService.update(customerRequestDTO, id), CustomerUpdateResponseDTO.class);
     }
 }
