@@ -4,22 +4,19 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
+@Data
+@AllArgsConstructor
 public class CustomerUpdateRequestDTO {
 
     @NotBlank(message = "Name is a required field.")
-    @Pattern(regexp = "^([a-zA-Z]*)(\\s([a-zA-Z]*))*$")
+    @Pattern(regexp = "^([a-zA-Z]*)(\\s([a-zA-Z]*))*$", message = "Full name is required.")
     private String name;
 
     @Email(message = "Please enter a valid e-mail.")
     private String email;
 
     @NotNull(message = "Mobile number is a required field.")
-    private Integer mobileNumber;
+    private String mobileNumber;
 }

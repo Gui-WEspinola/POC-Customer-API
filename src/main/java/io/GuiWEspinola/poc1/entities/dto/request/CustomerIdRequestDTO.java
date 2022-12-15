@@ -1,12 +1,10 @@
 package io.GuiWEspinola.poc1.entities.dto.request;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
+@Data
+@NoArgsConstructor
 public class CustomerIdRequestDTO {
 
     private Long id;

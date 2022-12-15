@@ -10,22 +10,20 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 import org.hibernate.validator.group.GroupSequenceProvider;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
+@Data
+@AllArgsConstructor
 @GroupSequenceProvider(CustomerSequenceProvider.class)
 public class CustomerRequestDTO {
 
     @NotBlank(message = "Name is a required field.")
-    @Pattern(regexp = "^([a-zA-Z]*)(\\s([a-zA-Z]*))*$", message = "Name")
+    @Pattern(regexp = "^([a-zA-Z]*)(\\s([a-zA-Z]*))*$", message = "Full name is required.")
     private String name;
 
     @Email(message = "Please enter a valid e-mail.")
@@ -44,6 +42,5 @@ public class CustomerRequestDTO {
     private String documentNumber;
 
     @NotNull(message = "Mobile number is a required field.")
-    // TODO validation for mobile number
-    private Integer mobileNumber;
+    private String mobileNumber;
 }

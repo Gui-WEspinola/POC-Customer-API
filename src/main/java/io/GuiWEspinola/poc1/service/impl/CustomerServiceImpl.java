@@ -33,6 +33,16 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Page<Customer> findByCustomerName(String name, Pageable pageable) {
+        return customerRepository.findByNameLikeIgnoreCase(name, pageable);
+    }
+
+    @Override
+    public Page<Customer> findCustomerNameContaining(String name, Pageable pageable) {
+        return customerRepository.findByNameContainingIgnoreCase(name, pageable);
+    }
+
+    @Override
     public Customer findById(Long id) {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException(id));
@@ -77,7 +87,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .toList();
     }
 
-
+    @Override
     public void checksAvailableEmail(String email) {
         if (customerRepository.existsByEmail(email)){
             throw new ExistingEmailException(email);

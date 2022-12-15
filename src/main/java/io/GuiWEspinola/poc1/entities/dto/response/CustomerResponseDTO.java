@@ -1,12 +1,10 @@
 package io.GuiWEspinola.poc1.entities.dto.response;
 
 import io.GuiWEspinola.poc1.enums.DocumentType;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class CustomerResponseDTO {
 
@@ -18,5 +16,5 @@ public class CustomerResponseDTO {
 
     private DocumentType documentType;
 
-    private Integer mobileNumber;
+    private Long mobileNumber;
 }
