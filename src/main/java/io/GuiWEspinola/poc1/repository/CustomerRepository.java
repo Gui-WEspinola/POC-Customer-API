@@ -10,4 +10,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     boolean existsByEmail(String email);
 
     boolean existsByDocumentNumber(String document);
+
+    Customer findByNameLikeIgnoreCase (String name);
 }

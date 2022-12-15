@@ -24,7 +24,7 @@ import org.hibernate.validator.group.GroupSequenceProvider;
 public class CustomerRequestDTO {
 
     @NotBlank(message = "Name is a required field.")
-    @Pattern(regexp = "^([a-zA-Z]*)(\\s([a-zA-Z]*))*$")
+    @Pattern(regexp = "^([a-zA-Z]*)(\\s([a-zA-Z]*))*$", message = "Full name is required.")
     private String name;
 
     @Email(message = "Please enter a valid e-mail.")
