@@ -33,6 +33,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Page<Customer> findByName(String name, Pageable pageable) {
+        return customerRepository.findByNameLikeIgnoreCase(name, pageable);
+    }
+
+    @Override
     public Customer findById(Long id) {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException(id));

@@ -32,9 +32,16 @@ public class CustomerController {
 
     @GetMapping
     public ResponseEntity<Page<CustomerResponseDTO>> getAllCustomers(
-            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = {"name"}) Pageable pageable) {
-        Page<Customer> customerPage = customerService.findAll(pageable);
-        return ResponseEntity.ok().body(customerPage.map(customer -> mapper.map(customer, CustomerResponseDTO.class)));
+            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = {"name"}) Pageable pageable,
+            @RequestParam(required = false) String name) {
+
+        if (name != null) {
+            Page<Customer> page = customerService.findByName(name, pageable);
+            return ResponseEntity.ok().body(page.map(customer -> mapper.map(customer, CustomerResponseDTO.class)));
+        } else {
+            Page<Customer> page = customerService.findAll(pageable);
+            return ResponseEntity.ok().body(page.map(customer -> mapper.map(customer, CustomerResponseDTO.class)));
+        }
     }
 
     @GetMapping("/{id}")
