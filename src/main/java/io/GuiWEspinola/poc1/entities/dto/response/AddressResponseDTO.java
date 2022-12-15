@@ -1,12 +1,9 @@
 package io.GuiWEspinola.poc1.entities.dto.response;
 
-import io.GuiWEspinola.poc1.entities.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class AddressResponseDTO {
 

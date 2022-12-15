@@ -32,11 +32,11 @@ public class CustomerController {
 
     @GetMapping
     public ResponseEntity<Page<CustomerResponseDTO>> getAllCustomers(
-            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = {"name"}) Pageable pageable,
+            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
             @RequestParam(required = false) String name) {
 
         if (name != null) {
-            Page<Customer> page = customerService.findByName(name, pageable);
+            Page<Customer> page = customerService.findByCustomerName(name, pageable);
             return ResponseEntity.ok().body(page.map(customer -> mapper.map(customer, CustomerResponseDTO.class)));
         } else {
             Page<Customer> page = customerService.findAll(pageable);
@@ -49,8 +49,17 @@ public class CustomerController {
         return ResponseEntity.ok().body(mapper.map(customerService.findById(id), CustomerResponseDTO.class));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Page<CustomerResponseDTO>> searchCustomerByName(
+            @RequestParam String name,
+            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = "id") Pageable pageable){
+
+        var page = customerService.findCustomerNameContaining(name, pageable);
+        return ResponseEntity.ok().body(page.map(customer -> mapper.map(customer, CustomerResponseDTO.class)));
+    }
+
     @GetMapping("/addresses/{id}")
-    public ResponseEntity<List<AddressResponseDTO>> getAllAddresses(@PathVariable Long id) {
+    public ResponseEntity<List<AddressResponseDTO>> getAllAddressesByCustomer(@PathVariable Long id) {
         return ResponseEntity.ok().body(customerService.getAllAddresses(id));
     }
 
