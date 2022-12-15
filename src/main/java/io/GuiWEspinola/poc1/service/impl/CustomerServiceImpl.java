@@ -11,6 +11,8 @@ import io.GuiWEspinola.poc1.repository.CustomerRepository;
 import io.GuiWEspinola.poc1.service.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +28,8 @@ public class CustomerServiceImpl implements CustomerService {
     private ModelMapper mapper;
 
     @Override
-    public List<Customer> findAll() {
-        return customerRepository.findAll();
+    public Page<Customer> findAll(Pageable pageable) {
+        return customerRepository.findAll(pageable);
     }
 
     @Override
@@ -39,13 +41,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public Customer save(CustomerRequestDTO customerRequestDTO) {
-        documentNumberFilter(customerRequestDTO);
-        if (existsByEmail(customerRequestDTO.getEmail())) {
-            throw new ExistingEmailException(customerRequestDTO.getEmail());
-        }
-        if (existsByDocumentNumber(customerRequestDTO.getDocumentNumber())) {
-            throw new DocumentInUseException(customerRequestDTO.getDocumentNumber());
-        }
+
+        checksAvailableEmail(customerRequestDTO.getEmail());
+        checksDocumentNumber(customerRequestDTO.getDocumentNumber());
 
         return customerRepository.save(mapper.map(customerRequestDTO, Customer.class));
     }
@@ -62,6 +60,8 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer update(CustomerUpdateRequestDTO customerRequestDTO, Long id) {
         Customer customer = findById(id);
 
+        checksAvailableEmail(customerRequestDTO.getEmail());
+
         customer.setName(customerRequestDTO.getName());
         customer.setEmail(customerRequestDTO.getEmail());
         customer.setMobileNumber(customerRequestDTO.getMobileNumber());
@@ -77,20 +77,17 @@ public class CustomerServiceImpl implements CustomerService {
                 .toList();
     }
 
-    @Override
-    public boolean existsByEmail(String email) {
-        return customerRepository.existsByEmail(email);
+
+    public void checksAvailableEmail(String email) {
+        if (customerRepository.existsByEmail(email)){
+            throw new ExistingEmailException(email);
+        }
     }
 
     @Override
-    public boolean existsByDocumentNumber(String document) {
-        return customerRepository.existsByDocumentNumber(document);
-    }
-
-    private static void documentNumberFilter(CustomerRequestDTO customerRequestDTO) {
-        customerRequestDTO.setDocumentNumber(customerRequestDTO.getDocumentNumber()
-                .replace(".", "")
-                .replace("/", "")
-                .replace("-", ""));
+    public void checksDocumentNumber(String document) {
+        if (customerRepository.existsByDocumentNumber(document)){
+            throw new DocumentInUseException(document);
+        }
     }
 }

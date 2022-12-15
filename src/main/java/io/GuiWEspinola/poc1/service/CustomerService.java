@@ -4,6 +4,8 @@ import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequestDTO;
 import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.List;
 @Service
 public interface CustomerService {
 
-    List<Customer> findAll();
+    Page<Customer> findAll(Pageable pageable);
 
     Customer findById(Long id);
 
@@ -23,7 +25,7 @@ public interface CustomerService {
 
     List<AddressResponseDTO> getAllAddresses(Long id);
 
-    boolean existsByEmail(String email);
+    void checksAvailableEmail(String email);
 
-    boolean existsByDocumentNumber(String document);
+    void checksDocumentNumber(String document);
 }

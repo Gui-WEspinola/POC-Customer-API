@@ -18,7 +18,5 @@ public class CustomerResponseDTO {
 
     private DocumentType documentType;
 
-    private String documentNumber;
-
     private Integer mobileNumber;
 }

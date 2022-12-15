@@ -18,28 +18,22 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "Street name must not be empty")
     private String street;
 
-    @NotEmpty
     private String addressNumber;
 
-    @NotEmpty
     private String district;
 
-    @NotEmpty
     @Column(length = 110)
     private String city;
 
-    @NotEmpty
     @Column(length = 8)
     private String zipCode;
 
-    @NotEmpty
     private String state;
 
     @JsonIgnore
-    private Boolean mainAddress;
+    private Boolean isMainAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")

@@ -10,6 +10,10 @@ import io.GuiWEspinola.poc1.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,11 +31,10 @@ public class CustomerController {
     private final ModelMapper mapper;
 
     @GetMapping
-    public ResponseEntity<List<CustomerResponseDTO>> getAllCustomers() {
-        List<Customer> responseDTOList = customerService.findAll();
-        return ResponseEntity.ok().body(responseDTOList
-                .stream()
-                .map(customer -> mapper.map(customer, CustomerResponseDTO.class)).toList());
+    public ResponseEntity<Page<CustomerResponseDTO>> getAllCustomers(
+            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = {"name"}) Pageable pageable) {
+        Page<Customer> customerPage = customerService.findAll(pageable);
+        return ResponseEntity.ok().body(customerPage.map(customer -> mapper.map(customer, CustomerResponseDTO.class)));
     }
 
     @GetMapping("/{id}")
@@ -58,7 +61,7 @@ public class CustomerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CustomerUpdateResponseDTO> updateCustomer
-            (@PathVariable Long id, @RequestBody CustomerUpdateRequestDTO customerRequestDTO) {
+            (@PathVariable Long id, @RequestBody @Valid CustomerUpdateRequestDTO customerRequestDTO) {
 
         return ResponseEntity.accepted()
                 .body(mapper.map(customerService.update(customerRequestDTO, id), CustomerUpdateResponseDTO.class));
