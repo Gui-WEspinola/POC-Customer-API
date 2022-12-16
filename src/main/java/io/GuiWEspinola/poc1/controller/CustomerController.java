@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,16 +32,16 @@ public class CustomerController {
 
     @GetMapping
     @ResponseStatus(OK)
-    public Page<CustomerResponseDTO> getAllCustomers(
+    public Page<CustomerResponseDTO> getCustomers(
             @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
             @RequestParam(required = false) String name) {
 
         if (name != null) {
             Page<Customer> page = customerService.findByCustomerName(name, pageable);
-            return page.map(customer -> mapper.map(customer, CustomerResponseDTO.class));
+            return page.map(CustomerResponseDTO::new);
         } else {
             Page<Customer> page = customerService.findAll(pageable);
-            return page.map(customer -> mapper.map(customer, CustomerResponseDTO.class));
+            return page.map(CustomerResponseDTO::new);
         }
     }
 
