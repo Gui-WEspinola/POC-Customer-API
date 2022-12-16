@@ -32,7 +32,7 @@ public class Address {
 
     private String state;
 
-    private Boolean isMainAddress;
+    private Boolean mainAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")

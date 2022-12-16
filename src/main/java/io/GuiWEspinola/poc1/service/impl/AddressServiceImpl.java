@@ -29,9 +29,9 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public Address save(AddressRequestDTO addressRequestDTO) {
-        var customer = customerService.findById(addressRequestDTO.getCustomer().getId());
+        var customer = customerService.findById(addressRequestDTO.getCustomerId());
 
-        addressRequestDTO.setIsMainAddress(customer.getAddress().isEmpty());
+        addressRequestDTO.setMainAddress(customer.getAddress().isEmpty());
 
         checksMaximumAddressLimit(customer);
 
@@ -64,18 +64,18 @@ public class AddressServiceImpl implements AddressService {
 
         address.getCustomer().getAddress()
                 .forEach(a -> {
-                    a.setIsMainAddress(false);
+                    a.setMainAddress(false);
                     addressRepository.save(a);
                 });
 
-        address.setIsMainAddress(true);
+        address.setMainAddress(true);
         return addressRepository.save(address);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        if (Boolean.TRUE.equals(findById(id).getIsMainAddress())) {
+        if (Boolean.TRUE.equals(findById(id).getMainAddress())) {
             throw new MainAddressDeleteException();
         }
         addressRepository.delete(findById(id));

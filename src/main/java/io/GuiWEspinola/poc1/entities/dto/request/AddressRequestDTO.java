@@ -19,7 +19,7 @@ public class AddressRequestDTO {
 
     private String state;
 
-    private Boolean isMainAddress;
+    private Boolean mainAddress;
 
-    private CustomerIdRequestDTO customer;
+    private Long customerId;
 }
