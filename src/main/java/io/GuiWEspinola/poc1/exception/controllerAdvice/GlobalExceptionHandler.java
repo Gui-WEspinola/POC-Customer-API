@@ -1,4 +1,4 @@
-package io.GuiWEspinola.poc1.exception.exceptionHandler;
+package io.GuiWEspinola.poc1.exception.controllerAdvice;
 
 import io.GuiWEspinola.poc1.exception.*;
 import io.GuiWEspinola.poc1.exception.dto.ApiErrorsDTO;
