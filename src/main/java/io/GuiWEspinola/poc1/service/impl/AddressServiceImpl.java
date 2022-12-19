@@ -32,14 +32,15 @@ public class AddressServiceImpl implements AddressService {
     @Autowired
     private ModelMapper mapper;
 
+    private final Gson gson;
+
     private static final String VIACEP_URL = "https://viacep.com.br/ws/{zipcode}/json/";
 
     private final RestTemplate restTemplate;
 
-    private final Gson gson;
 
     @Autowired
-    public AddressServiceImpl (RestTemplateBuilder restTemplateBuilder) {
+    public AddressServiceImpl(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
         this.gson = new Gson();
     }
@@ -50,25 +51,11 @@ public class AddressServiceImpl implements AddressService {
         var customer = customerService.findById(addressRequest.getCustomerId());
         Address address = mapper.map(addressRequest, Address.class);
 
-        ResponseEntity<String> response = restTemplate.getForEntity(VIACEP_URL, String.class, addressRequest.getZipCode());
+        checksMaximumAddressLimit(customer);
 
-            if (response.getStatusCode().is2xxSuccessful()) {
-                String responseBody = response.getBody();
+        address = getAddressFromViaCepApi(address);
 
-                ViaCepResponse viaCepResponse = gson.fromJson(responseBody, ViaCepResponse.class);
-
-                address.setStreet(viaCepResponse.getLogradouro());
-                address.setDistrict(viaCepResponse.getBairro());
-                address.setCity(viaCepResponse.getLocalidade());
-                address.setState(viaCepResponse.getUf());
-                address.setMainAddress(customer.getAddress().isEmpty());
-
-                checksMaximumAddressLimit(customer);
-
-
-            } else if (response.getStatusCode().is4xxClientError()){
-                throw new ZipCodeNotFoundException(addressRequest.getZipCode());
-            }
+        address.setMainAddress(customer.getAddress().isEmpty());
 
         return addressRepository.save(address);
     }
@@ -83,12 +70,11 @@ public class AddressServiceImpl implements AddressService {
     public Address update(AddressRequest addressRequest, Long id) {
         Address address = findById(id);
 
-//        address.setAddressNumber(addressRequest.getAddressNumber());
-//        address.setDistrict(addressRequest.getDistrict());
-//        address.setState(addressRequest.getState());
-//        address.setStreet(addressRequest.getStreet());
-//        address.setZipCode(addressRequest.getZipCode());
-//        address.setCity(addressRequest.getCity());
+        address.setNumber(addressRequest.getNumber());
+        address.setComplement(addressRequest.getComplement());
+        address.setZipCode(addressRequest.getZipCode());
+
+        address = getAddressFromViaCepApi(address);
 
         return addressRepository.save(address);
     }
@@ -120,5 +106,23 @@ public class AddressServiceImpl implements AddressService {
         if (customer.getAddress().size() >= 5) {
             throw new AddressMaxLimitException(customer.getId());
         }
+    }
+
+    public Address getAddressFromViaCepApi(Address address) {
+        ResponseEntity<String> response = restTemplate.getForEntity(VIACEP_URL, String.class, address.getZipCode());
+        String responseBody = response.getBody();
+        ViaCepResponse viaCepResponse = gson.fromJson(responseBody, ViaCepResponse.class);
+
+        if (Boolean.FALSE.equals(viaCepResponse.getErro())) {
+
+            address.setStreet(viaCepResponse.getLogradouro());
+            address.setDistrict(viaCepResponse.getBairro());
+            address.setCity(viaCepResponse.getLocalidade());
+            address.setState(viaCepResponse.getUf());
+
+        } else {
+            throw new ZipCodeNotFoundException(address.getZipCode());
+        }
+        return address;
     }
 }

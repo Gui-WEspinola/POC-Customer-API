@@ -24,12 +24,13 @@ public class Address {
 
     private String number;
 
+    private String complement;
+
     private String district;
 
     @Column(length = 110)
     private String city;
 
-    @Column(length = 8)
     private String zipCode;
 
     private String state;

@@ -11,7 +11,9 @@ public class AddressResponse {
 
     private String street;
 
-    private Integer number;
+    private String number;
+
+    private String complement;
 
     private String district;
 

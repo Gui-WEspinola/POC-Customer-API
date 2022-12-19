@@ -7,6 +7,6 @@ public class ZipCodeNotFoundException extends RuntimeException{
     }
 
     private static String formatMessage(String zipCode) {
-        return String.format("Zipcode '%d' does not exist!", zipCode);
+        return String.format("Zipcode '%s' does not exist!", zipCode);
     }
 }

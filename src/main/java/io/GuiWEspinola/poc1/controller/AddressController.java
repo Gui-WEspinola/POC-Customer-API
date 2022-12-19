@@ -4,6 +4,7 @@ import io.GuiWEspinola.poc1.entities.dto.request.AddressRequest;
 import io.GuiWEspinola.poc1.entities.dto.response.AddressResponse;
 import io.GuiWEspinola.poc1.service.AddressService;
 import io.GuiWEspinola.poc1.service.CustomerService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class AddressController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public AddressResponse createAddress(@RequestBody AddressRequest addressRequest) {
+    public AddressResponse createAddress(@RequestBody @Valid AddressRequest addressRequest) {
         return mapper.map(addressService.save(addressRequest), AddressResponse.class);
     }
 
@@ -46,7 +47,7 @@ public class AddressController {
     @PutMapping("/{id}")
     @ResponseStatus(ACCEPTED)
     public AddressResponse updateAddress(@PathVariable Long id,
-                                         @RequestBody AddressRequest addressRequest) {
+                                         @RequestBody @Valid AddressRequest addressRequest) {
         return mapper.map(addressService.update(addressRequest, id), AddressResponse.class);
     }
 

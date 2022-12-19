@@ -39,9 +39,21 @@ public class GlobalControllerAdvice {
                 .timestamp(LocalDateTime.now())
                 .message(exception.getMessage())
                 .path(request.getRequestURI())
-                .httpStatus(NOT_FOUND.value()).build();
+                .httpStatus(NO_CONTENT.value()).build();
 
-        return ResponseEntity.status(NOT_FOUND).body(errorDTO);
+        return ResponseEntity.status(NO_CONTENT).body(errorDTO);
+    }
+
+    @ExceptionHandler(ZipCodeNotFoundException.class)
+    public ResponseEntity<ApiErrorsDTO> invalidZipCodeHandler(ZipCodeNotFoundException exception,
+                                                               HttpServletRequest request) {
+        var errorDTO = ApiErrorsDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .httpStatus(BAD_REQUEST.value()).build();
+
+        return ResponseEntity.status(BAD_REQUEST).body(errorDTO);
     }
 
     @ExceptionHandler(HttpClientErrorException.class)
