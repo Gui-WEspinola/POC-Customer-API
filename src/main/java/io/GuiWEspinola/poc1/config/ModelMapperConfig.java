@@ -1,11 +1,6 @@
 package io.GuiWEspinola.poc1.config;
 
-import io.GuiWEspinola.poc1.entities.Customer;
-import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponseDTO;
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

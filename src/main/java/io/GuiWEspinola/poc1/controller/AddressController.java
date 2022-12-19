@@ -1,7 +1,7 @@
 package io.GuiWEspinola.poc1.controller;
 
-import io.GuiWEspinola.poc1.entities.dto.request.AddressRequestDTO;
-import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
+import io.GuiWEspinola.poc1.entities.dto.request.AddressRequest;
+import io.GuiWEspinola.poc1.entities.dto.response.AddressResponse;
 import io.GuiWEspinola.poc1.service.AddressService;
 import io.GuiWEspinola.poc1.service.CustomerService;
 import lombok.AllArgsConstructor;
@@ -27,14 +27,14 @@ public class AddressController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public AddressResponseDTO createAddress(@RequestBody AddressRequestDTO addressRequestDTO) {
-        return mapper.map(addressService.save(addressRequestDTO), AddressResponseDTO.class);
+    public AddressResponse createAddress(@RequestBody AddressRequest addressRequest) {
+        return mapper.map(addressService.save(addressRequest), AddressResponse.class);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(OK)
-    public AddressResponseDTO getAddressById(@PathVariable Long id) {
-        return mapper.map(addressService.findById(id), AddressResponseDTO.class);
+    public AddressResponse getAddressById(@PathVariable Long id) {
+        return mapper.map(addressService.findById(id), AddressResponse.class);
     }
 
     @DeleteMapping("/{id}")
@@ -45,14 +45,14 @@ public class AddressController {
 
     @PutMapping("/{id}")
     @ResponseStatus(ACCEPTED)
-    public AddressResponseDTO updateAddress(@PathVariable Long id,
-                                            @RequestBody AddressRequestDTO addressRequestDTO) {
-        return mapper.map(addressService.update(addressRequestDTO, id), AddressResponseDTO.class);
+    public AddressResponse updateAddress(@PathVariable Long id,
+                                         @RequestBody AddressRequest addressRequest) {
+        return mapper.map(addressService.update(addressRequest, id), AddressResponse.class);
     }
 
     @PatchMapping("/main-address/{id}")
     @ResponseStatus(ACCEPTED)
-    public AddressResponseDTO updateMainAddress(@PathVariable Long id) {
-        return mapper.map(addressService.updateMainAddress(id), AddressResponseDTO.class);
+    public AddressResponse updateMainAddress(@PathVariable Long id) {
+        return mapper.map(addressService.updateMainAddress(id), AddressResponse.class);
     }
 }

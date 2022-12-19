@@ -12,7 +12,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 import org.hibernate.validator.group.GroupSequenceProvider;
@@ -20,10 +19,10 @@ import org.hibernate.validator.group.GroupSequenceProvider;
 @Data
 @AllArgsConstructor
 @GroupSequenceProvider(CustomerSequenceProvider.class)
-public class CustomerRequestDTO {
+public class CustomerRequest {
 
     @NotBlank(message = "Name is a required field.")
-    @Pattern(regexp = "^([a-zA-Z]*)(\\s([a-zA-Z]*))*$", message = "Full name is required.")
+    @Pattern(regexp = "^[A-Za-z]+( [A-Za-z]+)*$", message = "Full name is required.")
     private String name;
 
     @Email(message = "Please enter a valid e-mail.")

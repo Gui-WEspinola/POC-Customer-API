@@ -1,24 +1,20 @@
 package io.GuiWEspinola.poc1.entities.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AddressRequestDTO {
+public class AddressRequest {
 
-    private String street;
-
-    private String addressNumber;
-
-    private String district;
-
-    private String city;
+    private String number;
 
     private String zipCode;
 
-    private String state;
+    private String complement;
 
+    @JsonIgnore
     private Boolean mainAddress;
 
     private Long customerId;

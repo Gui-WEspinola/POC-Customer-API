@@ -1,18 +1,24 @@
 package io.GuiWEspinola.poc1.service.impl;
 
+import com.google.gson.Gson;
 import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.Customer;
-import io.GuiWEspinola.poc1.entities.dto.request.AddressRequestDTO;
+import io.GuiWEspinola.poc1.entities.dto.request.AddressRequest;
+import io.GuiWEspinola.poc1.entities.dto.response.ViaCepResponse;
 import io.GuiWEspinola.poc1.exception.AddressMaxLimitException;
 import io.GuiWEspinola.poc1.exception.AddressNotFoundException;
 import io.GuiWEspinola.poc1.exception.MainAddressDeleteException;
+import io.GuiWEspinola.poc1.exception.ZipCodeNotFoundException;
 import io.GuiWEspinola.poc1.repository.AddressRepository;
 import io.GuiWEspinola.poc1.service.AddressService;
 import io.GuiWEspinola.poc1.service.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class AddressServiceImpl implements AddressService {
@@ -26,16 +32,45 @@ public class AddressServiceImpl implements AddressService {
     @Autowired
     private ModelMapper mapper;
 
+    private static final String VIACEP_URL = "https://viacep.com.br/ws/{zipcode}/json/";
+
+    private final RestTemplate restTemplate;
+
+    private final Gson gson;
+
+    @Autowired
+    public AddressServiceImpl (RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder.build();
+        this.gson = new Gson();
+    }
+
     @Override
     @Transactional
-    public Address save(AddressRequestDTO addressRequestDTO) {
-        var customer = customerService.findById(addressRequestDTO.getCustomerId());
+    public Address save(AddressRequest addressRequest) {
+        var customer = customerService.findById(addressRequest.getCustomerId());
+        Address address = mapper.map(addressRequest, Address.class);
 
-        addressRequestDTO.setMainAddress(customer.getAddress().isEmpty());
+        ResponseEntity<String> response = restTemplate.getForEntity(VIACEP_URL, String.class, addressRequest.getZipCode());
 
-        checksMaximumAddressLimit(customer);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                String responseBody = response.getBody();
 
-        return addressRepository.save(mapper.map(addressRequestDTO, Address.class));
+                ViaCepResponse viaCepResponse = gson.fromJson(responseBody, ViaCepResponse.class);
+
+                address.setStreet(viaCepResponse.getLogradouro());
+                address.setDistrict(viaCepResponse.getBairro());
+                address.setCity(viaCepResponse.getLocalidade());
+                address.setState(viaCepResponse.getUf());
+                address.setMainAddress(customer.getAddress().isEmpty());
+
+                checksMaximumAddressLimit(customer);
+
+
+            } else if (response.getStatusCode().is4xxClientError()){
+                throw new ZipCodeNotFoundException(addressRequest.getZipCode());
+            }
+
+        return addressRepository.save(address);
     }
 
     @Override
@@ -45,15 +80,15 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional
-    public Address update(AddressRequestDTO addressRequestDTO, Long id) {
+    public Address update(AddressRequest addressRequest, Long id) {
         Address address = findById(id);
 
-        address.setAddressNumber(addressRequestDTO.getAddressNumber());
-        address.setDistrict(addressRequestDTO.getDistrict());
-        address.setState(addressRequestDTO.getState());
-        address.setStreet(addressRequestDTO.getStreet());
-        address.setZipCode(addressRequestDTO.getZipCode());
-        address.setCity(addressRequestDTO.getCity());
+//        address.setAddressNumber(addressRequest.getAddressNumber());
+//        address.setDistrict(addressRequest.getDistrict());
+//        address.setState(addressRequest.getState());
+//        address.setStreet(addressRequest.getStreet());
+//        address.setZipCode(addressRequest.getZipCode());
+//        address.setCity(addressRequest.getCity());
 
         return addressRepository.save(address);
     }

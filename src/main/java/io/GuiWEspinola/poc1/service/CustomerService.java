@@ -1,9 +1,9 @@
 package io.GuiWEspinola.poc1.service;
 
 import io.GuiWEspinola.poc1.entities.Customer;
-import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
-import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequestDTO;
-import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
+import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequest;
+import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequest;
+import io.GuiWEspinola.poc1.entities.dto.response.AddressResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,13 +21,13 @@ public interface CustomerService {
 
     Customer findById(Long id);
 
-    Customer save(CustomerRequestDTO customerRequestDTO);
+    Customer save(CustomerRequest customerRequest);
 
     void delete(Long id);
 
-    Customer update(CustomerUpdateRequestDTO requestDTO, Long id);
+    Customer update(CustomerUpdateRequest requestDTO, Long id);
 
-    List<AddressResponseDTO> getAllAddresses(Long id);
+    List<AddressResponse> getAllAddresses(Long id);
 
     void checksAvailableEmail(String email);
 

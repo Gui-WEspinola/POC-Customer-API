@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CustomerIdRequestDTO {
+public class CustomerIdRequest {
 
     private Long id;
 }

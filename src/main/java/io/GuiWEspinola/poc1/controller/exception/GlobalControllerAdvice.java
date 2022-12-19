@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalControllerAdvice {
 
     @ExceptionHandler(CustomerNotFoundException.class)
     public ResponseEntity<ApiErrorsDTO> customerNotFoundExceptionHandler(CustomerNotFoundException exception,
@@ -41,6 +42,19 @@ public class GlobalExceptionHandler {
                 .httpStatus(NOT_FOUND.value()).build();
 
         return ResponseEntity.status(NOT_FOUND).body(errorDTO);
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity<ApiErrorsDTO> invalidZipCodeHandler(HttpClientErrorException exception,
+                                                              HttpServletRequest request) {
+        var errorDTO = ApiErrorsDTO.builder()
+                .message("Invalid Zip Code.")
+                .httpStatus(exception.getStatusCode().value())
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(exception.getStatusCode()).body(errorDTO);
     }
 
     @ExceptionHandler(AddressMaxLimitException.class)
