@@ -1,4 +1,4 @@
-package io.GuiWEspinola.poc1.exception.exceptionHandler;
+package io.GuiWEspinola.poc1.controller.exception;
 
 import io.GuiWEspinola.poc1.exception.*;
 import io.GuiWEspinola.poc1.exception.dto.ApiErrorsDTO;
@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalControllerAdvice {
 
     @ExceptionHandler(CustomerNotFoundException.class)
     public ResponseEntity<ApiErrorsDTO> customerNotFoundExceptionHandler(CustomerNotFoundException exception,
@@ -38,9 +39,34 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .message(exception.getMessage())
                 .path(request.getRequestURI())
-                .httpStatus(NOT_FOUND.value()).build();
+                .httpStatus(NO_CONTENT.value()).build();
 
-        return ResponseEntity.status(NOT_FOUND).body(errorDTO);
+        return ResponseEntity.status(NO_CONTENT).body(errorDTO);
+    }
+
+    @ExceptionHandler(ZipCodeNotFoundException.class)
+    public ResponseEntity<ApiErrorsDTO> invalidZipCodeHandler(ZipCodeNotFoundException exception,
+                                                               HttpServletRequest request) {
+        var errorDTO = ApiErrorsDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .httpStatus(BAD_REQUEST.value()).build();
+
+        return ResponseEntity.status(BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity<ApiErrorsDTO> invalidZipCodeHandler(HttpClientErrorException exception,
+                                                              HttpServletRequest request) {
+        var errorDTO = ApiErrorsDTO.builder()
+                .message("Invalid Zip Code.")
+                .httpStatus(exception.getStatusCode().value())
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(exception.getStatusCode()).body(errorDTO);
     }
 
     @ExceptionHandler(AddressMaxLimitException.class)

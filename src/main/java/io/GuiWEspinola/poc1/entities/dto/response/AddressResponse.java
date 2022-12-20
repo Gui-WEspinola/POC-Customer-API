@@ -5,13 +5,15 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AddressResponseDTO {
+public class AddressResponse {
 
     private Long id;
 
     private String street;
 
-    private Integer addressNumber;
+    private String number;
+
+    private String complement;
 
     private String district;
 

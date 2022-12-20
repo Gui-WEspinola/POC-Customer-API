@@ -1,11 +1,11 @@
 package io.GuiWEspinola.poc1.controller;
 
 import io.GuiWEspinola.poc1.entities.Customer;
-import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
-import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequestDTO;
-import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
-import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponseDTO;
-import io.GuiWEspinola.poc1.entities.dto.response.CustomerUpdateResponseDTO;
+import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequest;
+import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequest;
+import io.GuiWEspinola.poc1.entities.dto.response.AddressResponse;
+import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponse;
+import io.GuiWEspinola.poc1.entities.dto.response.CustomerUpdateResponse;
 import io.GuiWEspinola.poc1.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -31,45 +31,45 @@ public class CustomerController {
 
     @GetMapping
     @ResponseStatus(OK)
-    public Page<CustomerResponseDTO> getAllCustomers(
+    public Page<CustomerResponse> getCustomers(
             @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
             @RequestParam(required = false) String name) {
 
         if (name != null) {
             Page<Customer> page = customerService.findByCustomerName(name, pageable);
-            return page.map(customer -> mapper.map(customer, CustomerResponseDTO.class));
+            return page.map(CustomerResponse::new);
         } else {
             Page<Customer> page = customerService.findAll(pageable);
-            return page.map(customer -> mapper.map(customer, CustomerResponseDTO.class));
+            return page.map(CustomerResponse::new);
         }
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(OK)
-    public CustomerResponseDTO getCustomerById(@PathVariable Long id) {
-        return mapper.map(customerService.findById(id), CustomerResponseDTO.class);
+    public CustomerResponse getCustomerById(@PathVariable Long id) {
+        return mapper.map(customerService.findById(id), CustomerResponse.class);
     }
 
     @GetMapping("/search")
     @ResponseStatus(OK)
-    public Page<CustomerResponseDTO> searchCustomerByName(
+    public Page<CustomerResponse> searchCustomerByName(
             @RequestParam String name,
             @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = "id") Pageable pageable) {
 
         var page = customerService.findCustomerNameContaining(name, pageable);
-        return page.map(customer -> mapper.map(customer, CustomerResponseDTO.class));
+        return page.map(customer -> mapper.map(customer, CustomerResponse.class));
     }
 
     @GetMapping("/addresses/{id}")
     @ResponseStatus(OK)
-    public List<AddressResponseDTO> getAllAddressesByCustomer(@PathVariable Long id) {
+    public List<AddressResponse> getAllAddressesByCustomer(@PathVariable Long id) {
         return customerService.getAllAddresses(id);
     }
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public CustomerResponseDTO postCustomer(@RequestBody @Valid CustomerRequestDTO customerRequestDTO) {
-        return mapper.map(customerService.save(customerRequestDTO), CustomerResponseDTO.class);
+    public CustomerResponse postCustomer(@RequestBody @Valid CustomerRequest customerRequest) {
+        return mapper.map(customerService.save(customerRequest), CustomerResponse.class);
     }
 
     @DeleteMapping("/{id}")
@@ -79,9 +79,9 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(ACCEPTED)
-    public CustomerUpdateResponseDTO updateCustomer
-            (@PathVariable Long id, @RequestBody @Valid CustomerUpdateRequestDTO customerRequestDTO) {
-        return mapper.map(customerService.update(customerRequestDTO, id), CustomerUpdateResponseDTO.class);
+    @ResponseStatus(NO_CONTENT)
+    public CustomerUpdateResponse updateCustomer
+            (@PathVariable Long id, @RequestBody @Valid CustomerUpdateRequest customerRequestDTO) {
+        return mapper.map(customerService.update(customerRequestDTO, id), CustomerUpdateResponse.class);
     }
 }

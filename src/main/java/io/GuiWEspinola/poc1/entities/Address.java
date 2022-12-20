@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "tb_address")
 public class Address {
 
@@ -20,19 +22,20 @@ public class Address {
 
     private String street;
 
-    private String addressNumber;
+    private String number;
+
+    private String complement;
 
     private String district;
 
     @Column(length = 110)
     private String city;
 
-    @Column(length = 8)
     private String zipCode;
 
     private String state;
 
-    private Boolean isMainAddress;
+    private Boolean mainAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")

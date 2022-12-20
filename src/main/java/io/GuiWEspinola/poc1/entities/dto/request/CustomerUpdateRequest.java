@@ -8,10 +8,10 @@ import lombok.*;
 
 @Data
 @AllArgsConstructor
-public class CustomerUpdateRequestDTO {
+public class CustomerUpdateRequest {
 
     @NotBlank(message = "Name is a required field.")
-    @Pattern(regexp = "^([a-zA-Z]*)(\\s([a-zA-Z]*))*$", message = "Full name is required.")
+    @Pattern(regexp = "^[A-Za-z]+( [A-Za-z]+)*$", message = "Full name is required.")
     private String name;
 
     @Email(message = "Please enter a valid e-mail.")

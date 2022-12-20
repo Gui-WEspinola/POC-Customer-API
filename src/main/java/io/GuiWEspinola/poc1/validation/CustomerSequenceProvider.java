@@ -1,18 +1,17 @@
 package io.GuiWEspinola.poc1.validation;
 
-import io.GuiWEspinola.poc1.entities.Customer;
-import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
+import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequest;
 import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerSequenceProvider implements DefaultGroupSequenceProvider<CustomerRequestDTO> {
+public class CustomerSequenceProvider implements DefaultGroupSequenceProvider<CustomerRequest> {
 
     @Override
-    public List<Class<?>> getValidationGroups(CustomerRequestDTO customer) {
+    public List<Class<?>> getValidationGroups(CustomerRequest customer) {
         List<Class<?>> groups = new ArrayList<>();
-        groups.add(CustomerRequestDTO.class);
+        groups.add(CustomerRequest.class);
 
         if (isCustomerSelected(customer)) {
             groups.add(customer.getDocumentType().getGroup());
@@ -21,7 +20,7 @@ public class CustomerSequenceProvider implements DefaultGroupSequenceProvider<Cu
         return groups;
     }
 
-    protected boolean isCustomerSelected(CustomerRequestDTO customer){
+    protected boolean isCustomerSelected(CustomerRequest customer){
         return customer != null && customer.getDocumentType() != null;
     }
 }

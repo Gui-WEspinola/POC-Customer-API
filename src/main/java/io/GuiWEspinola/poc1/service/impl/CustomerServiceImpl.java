@@ -1,9 +1,9 @@
 package io.GuiWEspinola.poc1.service.impl;
 
 import io.GuiWEspinola.poc1.entities.Customer;
-import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequestDTO;
-import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequestDTO;
-import io.GuiWEspinola.poc1.entities.dto.response.AddressResponseDTO;
+import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequest;
+import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequest;
+import io.GuiWEspinola.poc1.entities.dto.response.AddressResponse;
 import io.GuiWEspinola.poc1.exception.CustomerNotFoundException;
 import io.GuiWEspinola.poc1.exception.DocumentInUseException;
 import io.GuiWEspinola.poc1.exception.ExistingEmailException;
@@ -50,12 +50,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public Customer save(CustomerRequestDTO customerRequestDTO) {
+    public Customer save(CustomerRequest customerRequest) {
 
-        checksAvailableEmail(customerRequestDTO.getEmail());
-        checksDocumentNumber(customerRequestDTO.getDocumentNumber());
+        checksAvailableEmail(customerRequest.getEmail());
+        checksDocumentNumber(customerRequest.getDocumentNumber());
 
-        return customerRepository.save(mapper.map(customerRequestDTO, Customer.class));
+        return customerRepository.save(mapper.map(customerRequest, Customer.class));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public Customer update(CustomerUpdateRequestDTO customerRequestDTO, Long id) {
+    public Customer update(CustomerUpdateRequest customerRequestDTO, Long id) {
         Customer customer = findById(id);
 
         checksAvailableEmail(customerRequestDTO.getEmail());
@@ -80,10 +80,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<AddressResponseDTO> getAllAddresses(Long id) {
+    public List<AddressResponse> getAllAddresses(Long id) {
         return findById(id).getAddress()
                 .stream()
-                .map(address -> mapper.map(address, AddressResponseDTO.class))
+                .map(address -> mapper.map(address, AddressResponse.class))
                 .toList();
     }
 
