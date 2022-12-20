@@ -45,14 +45,14 @@ public class AddressController {
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(ACCEPTED)
+    @ResponseStatus(NO_CONTENT)
     public AddressResponse updateAddress(@PathVariable Long id,
                                          @RequestBody @Valid AddressRequest addressRequest) {
         return mapper.map(addressService.update(addressRequest, id), AddressResponse.class);
     }
 
     @PatchMapping("/main-address/{id}")
-    @ResponseStatus(ACCEPTED)
+    @ResponseStatus(NO_CONTENT)
     public AddressResponse updateMainAddress(@PathVariable Long id) {
         return mapper.map(addressService.updateMainAddress(id), AddressResponse.class);
     }

@@ -79,7 +79,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(OK)
+    @ResponseStatus(NO_CONTENT)
     public CustomerUpdateResponse updateCustomer
             (@PathVariable Long id, @RequestBody @Valid CustomerUpdateRequest customerRequestDTO) {
         return mapper.map(customerService.update(customerRequestDTO, id), CustomerUpdateResponse.class);
