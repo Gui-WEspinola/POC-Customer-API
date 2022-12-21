@@ -2,8 +2,6 @@ package io.GuiWEspinola.poc1.controller.exception;
 
 import io.GuiWEspinola.poc1.exception.*;
 import io.GuiWEspinola.poc1.exception.dto.ApiErrorsDTO;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(ZipCodeNotFoundException.class)
     public ResponseEntity<ApiErrorsDTO> invalidZipCodeHandler(ZipCodeNotFoundException exception,
-                                                               HttpServletRequest request) {
+                                                              HttpServletRequest request) {
         var errorDTO = ApiErrorsDTO.builder()
                 .timestamp(LocalDateTime.now())
                 .message(exception.getMessage())
@@ -145,12 +145,12 @@ public class GlobalControllerAdvice {
             var errorDTO = ApiErrorsDTO.builder()
                     .timestamp(LocalDateTime.now())
                     .message(e.getDefaultMessage())
-                    .httpStatus(exception.getStatusCode().value())
+                    .httpStatus(BAD_REQUEST.value())
                     .path(request.getRequestURI()).build();
 
             errorsDTOList.add(errorDTO);
         });
-        return ResponseEntity.status(exception.getStatusCode()).body(errorsDTOList);
+        return ResponseEntity.status(BAD_REQUEST).body(errorsDTOList);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

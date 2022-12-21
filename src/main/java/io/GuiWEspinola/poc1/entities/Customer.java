@@ -1,10 +1,9 @@
 package io.GuiWEspinola.poc1.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.GuiWEspinola.poc1.enums.DocumentType;
-import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

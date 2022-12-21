@@ -4,17 +4,18 @@ import io.GuiWEspinola.poc1.enums.DocumentType;
 import io.GuiWEspinola.poc1.validation.CustomerSequenceProvider;
 import io.GuiWEspinola.poc1.validation.groupValidation.CnpjGroup;
 import io.GuiWEspinola.poc1.validation.groupValidation.CpfGroup;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 import org.hibernate.validator.group.GroupSequenceProvider;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Data
 @AllArgsConstructor

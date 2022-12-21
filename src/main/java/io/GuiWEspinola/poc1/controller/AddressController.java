@@ -4,11 +4,12 @@ import io.GuiWEspinola.poc1.entities.dto.request.AddressRequest;
 import io.GuiWEspinola.poc1.entities.dto.response.AddressResponse;
 import io.GuiWEspinola.poc1.service.AddressService;
 import io.GuiWEspinola.poc1.service.CustomerService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.*;
 
