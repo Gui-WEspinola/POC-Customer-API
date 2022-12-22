@@ -6,6 +6,7 @@ import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequest;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponse;
 import io.GuiWEspinola.poc1.enums.DocumentType;
 import io.GuiWEspinola.poc1.service.impl.CustomerServiceImpl;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
@@ -19,11 +20,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -42,39 +46,46 @@ class CustomerControllerTest {
 
     static String CUSTOMER_API = "/poc1/api/customers";
 
+    Customer savedCustomer = Customer.builder()
+            .id(1L)
+            .name("guilherme")
+            .email("gui@email.com")
+            .documentType(DocumentType.CPF)
+            .documentNumber("097.169.134-78")
+            .mobileNumber("83993347877")
+            .address(new ArrayList<>()).build();
+
+    CustomerResponse expectedResponse = CustomerResponse.builder()
+            .id(1L)
+            .name("guilherme")
+            .email("gui@email.com")
+            .documentType(DocumentType.CPF)
+            .documentNumber("097.169.134-78")
+            .mobileNumber("83993347877").build();
+
+    CustomerRequest customerRequestCPF = CustomerRequest.builder()
+            .name("guilherme")
+            .email("gui@email.com")
+            .documentType(DocumentType.CPF)
+            .documentNumber("097.169.134-78")
+            .mobileNumber("83993347877").build();
+
+    CustomerRequest customerRequestCNPJ = CustomerRequest.builder()
+            .name("guilherme")
+            .email("gui@email.com")
+            .documentType(DocumentType.CNPJ)
+            .documentNumber("25.229.847/0001-73")
+            .mobileNumber("83993347877").build();
+
     @Test
-    void testPostCustomer() throws Exception {
-        // Set up test data
-        CustomerRequest dto = CustomerRequest.builder()
-                .mobileNumber("83993347877")
-                .documentNumber("097.169.134-78")
-                .name("guilherme")
-                .documentType(DocumentType.CPF)
-                .email("gui@email.com").build();
-
-        Customer savedCustomer = Customer.builder()
-                .id(1L)
-                .name("guilherme")
-                .email("gui@email.com")
-                .documentType(DocumentType.CPF)
-                .documentNumber("097.169.134-78")
-                .mobileNumber("83993347877")
-                .address(new ArrayList<>()).build();
-
-        CustomerResponse expectedResponse = CustomerResponse.builder()
-                .id(1L)
-                .name("guilherme")
-                .email("gui@email.com")
-                .documentType(DocumentType.CPF)
-                .documentNumber("097.169.134-78")
-                .mobileNumber("83993347877").build();
-
+    @DisplayName("Should successfully create a customer with a valid CPF")
+    void testPostCustomerCPF() throws Exception {
         // Set up mock behavior
         BDDMockito.given(customerService.save(Mockito.any(CustomerRequest.class))).willReturn(savedCustomer);
         BDDMockito.given(mapper.map(savedCustomer, CustomerResponse.class)).willReturn(expectedResponse);
 
         // Convert test data to JSON
-        String json = new ObjectMapper().writeValueAsString(dto);
+        String json = new ObjectMapper().writeValueAsString(customerRequestCNPJ);
 
         // Send POST request to the controller
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(CUSTOMER_API)
@@ -88,20 +99,59 @@ class CustomerControllerTest {
         CustomerResponse actualResponse =
                 new ObjectMapper().readValue(result.getResponse().getContentAsString(), CustomerResponse.class);
 
-//        mockMvc.perform(result)
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("id").value(savedCustomer.getId()))
-//                .andExpect(jsonPath("name").value(savedCustomer.getName()))
-//                .andExpect(jsonPath("email").value(savedCustomer.getEmail()))
-//                .andExpect(jsonPath("documentType").value(savedCustomer.getDocumentType().toString()))
-//                .andExpect(jsonPath("documentNumber").value(savedCustomer.getDocumentNumber()))
-//                .andExpect(jsonPath("mobileNumber").value(savedCustomer.getMobileNumber()));
-
         // Verify that the response is correct
+        assertThat(actualResponse.getId()).isEqualTo(expectedResponse.getId());
         assertThat(actualResponse.getName()).isEqualTo(expectedResponse.getName());
         assertThat(actualResponse.getEmail()).isEqualTo(expectedResponse.getEmail());
         assertThat(actualResponse.getDocumentNumber()).isEqualTo(expectedResponse.getDocumentNumber());
         assertThat(actualResponse.getDocumentType()).isEqualTo(expectedResponse.getDocumentType());
-        assertThat(actualResponse.getDocumentNumber()).isEqualTo(expectedResponse.getDocumentNumber());
+        assertThat(actualResponse.getMobileNumber()).isEqualTo(expectedResponse.getMobileNumber());
+    }
+
+    @Test
+    @DisplayName("Should successfully create a customer with a valid CNPJ")
+    void testPostCustomerCNPJRefactor() throws Exception {
+        // Set up mock behavior
+        BDDMockito.given(customerService.save(Mockito.any(CustomerRequest.class))).willReturn(savedCustomer);
+        BDDMockito.given(mapper.map(savedCustomer, CustomerResponse.class)).willReturn(expectedResponse);
+        // Convert test data to JSON
+        String json = new ObjectMapper().writeValueAsString(customerRequestCNPJ);
+        // Send POST request to the controller
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(CUSTOMER_API)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.name").value(expectedResponse.getName()))
+                .andExpect(jsonPath("$.email").value(expectedResponse.getEmail()))
+                .andExpect(jsonPath("$.documentType").value(expectedResponse.getDocumentType().toString()))
+                .andExpect(jsonPath("$.documentNumber").value(expectedResponse.getDocumentNumber()))
+                .andExpect(jsonPath("$.mobileNumber").value(expectedResponse.getMobileNumber()));
+    }
+
+    @Test
+    @DisplayName("Should throw a list of errors when failing to create a Customer with empty fields")
+    void testPostCustomerAndThrowException() throws Exception {
+
+        String json = new ObjectMapper().writeValueAsString(new CustomerRequest());
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(CUSTOMER_API)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0].timestamp").isNotEmpty())
+                .andExpect(jsonPath("$[0].message").isNotEmpty())
+                .andExpect(jsonPath("$[0].path").isNotEmpty())
+                .andExpect(jsonPath("$[0].httpStatus").isNotEmpty())
+                .andExpect(jsonPath("$[4].message").isNotEmpty())
+                .andExpect(jsonPath("$[5].message").doesNotExist());
     }
 }
