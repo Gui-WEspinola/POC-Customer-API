@@ -18,6 +18,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.groups.Default;
 
 @Data
 @Builder
@@ -41,7 +42,8 @@ public class CustomerRequest {
     @CPF(groups = CpfGroup.class)
     @CNPJ(groups = CnpjGroup.class)
     @NotBlank(message = "CPF/CNPJ is a required field.")
-    @Pattern(regexp = "(^\\d{3}.\\d{3}.\\d{3}-\\d{2}$)|(^\\d{2}.\\d{3}.\\d{3}/\\d{4}-\\d{2}$)", message = "Enter CPF/CNPJ with complete format")
+    @Pattern(regexp = "(^\\d{3}.\\d{3}.\\d{3}-\\d{2}$)|(^\\d{11}$)", message = "Invalid CPF format", groups = CpfGroup.class)
+    @Pattern(regexp = "(^\\d{2}.\\d{3}.\\d{3}/\\d{4}-\\d{2}$)|(^\\d{14}$)", message = "Invalid CNPJ format", groups = CnpjGroup.class)
     private String documentNumber;
 
     @NotNull(message = "Mobile number is a required field.")
