@@ -5,7 +5,9 @@ import io.GuiWEspinola.poc1.validation.CustomerSequenceProvider;
 import io.GuiWEspinola.poc1.validation.groupValidation.CnpjGroup;
 import io.GuiWEspinola.poc1.validation.groupValidation.CpfGroup;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 import org.hibernate.validator.group.GroupSequenceProvider;
@@ -18,7 +20,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Data
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @GroupSequenceProvider(CustomerSequenceProvider.class)
 public class CustomerRequest {
 
@@ -37,8 +41,7 @@ public class CustomerRequest {
     @CPF(groups = CpfGroup.class)
     @CNPJ(groups = CnpjGroup.class)
     @NotBlank(message = "CPF/CNPJ is a required field.")
-    @Pattern(regexp = "(^\\d{3}.\\d{3}.\\d{3}-\\d{2}$)|(^\\d{2}.\\d{3}.\\d{3}/\\d{4}-\\d{2}$)",
-            message = "Enter CPF/CNPJ with complete format")
+    @Pattern(regexp = "(^\\d{3}.\\d{3}.\\d{3}-\\d{2}$)|(^\\d{2}.\\d{3}.\\d{3}/\\d{4}-\\d{2}$)", message = "Enter CPF/CNPJ with complete format")
     private String documentNumber;
 
     @NotNull(message = "Mobile number is a required field.")

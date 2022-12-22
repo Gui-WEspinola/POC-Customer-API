@@ -1,7 +1,10 @@
 package io.GuiWEspinola.poc1.entities;
 
 import io.GuiWEspinola.poc1.enums.DocumentType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,7 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tb_customer")
 public class Customer implements Serializable {
 

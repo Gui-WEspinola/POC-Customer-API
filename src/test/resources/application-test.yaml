@@ -1,0 +1,20 @@
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      format_sql: true
+    database: MYSQL
+    hibernate:
+      ddl-auto: update
+
+  datasource:
+    url: ${URL}
+    username: ${USER}
+    password: ${PASSWORD}
+
+  main:
+    banner-mode: off
+  output:
+    ansi:
+      enabled: ALWAYS
+

@@ -6,7 +6,7 @@ import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequest;
 import io.GuiWEspinola.poc1.entities.dto.response.AddressResponse;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponse;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerUpdateResponse;
-import io.GuiWEspinola.poc1.service.CustomerService;
+import io.GuiWEspinola.poc1.service.impl.CustomerServiceImpl;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping(path = "poc1/api/customers")
 public class CustomerController {
 
-    private final CustomerService customerService;
+    private final CustomerServiceImpl customerService;
 
     private final ModelMapper mapper;
 

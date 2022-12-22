@@ -3,10 +3,12 @@ package io.GuiWEspinola.poc1.entities.dto.response;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.enums.DocumentType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerResponse {
