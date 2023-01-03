@@ -5,7 +5,6 @@ import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequest;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponse;
 import io.GuiWEspinola.poc1.enums.DocumentType;
-import io.GuiWEspinola.poc1.exception.AddressNotFoundException;
 import io.GuiWEspinola.poc1.exception.CustomerNotFoundException;
 import io.GuiWEspinola.poc1.service.impl.CustomerServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -89,7 +88,8 @@ class CustomerControllerTest {
         String json = new ObjectMapper().writeValueAsString(customerRequestCPF);
 
         // Send POST request to the controller
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(CUSTOMER_API)
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .post(CUSTOMER_API)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -157,8 +157,30 @@ class CustomerControllerTest {
     }
 
     @Test
+    @DisplayName("Should return a Customer successfully")
+    void testGetCustomer() throws Exception {
+
+        BDDMockito.given(customerService.findById(savedCustomer.getId())).willReturn(savedCustomer);
+        BDDMockito.given(mapper.map(savedCustomer, CustomerResponse.class)).willReturn(expectedResponse);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(CUSTOMER_API + "/{id}", savedCustomer.getId())
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(expectedResponse.getId()))
+                .andExpect(jsonPath("name").value(expectedResponse.getName()))
+                .andExpect(jsonPath("email").value(expectedResponse.getEmail()))
+                .andExpect(jsonPath("documentType").value(expectedResponse.getDocumentType().toString()))
+                .andExpect(jsonPath("documentNumber").value(expectedResponse.getDocumentNumber()))
+                .andExpect(jsonPath("mobileNumber").value(expectedResponse.getMobileNumber()));
+    }
+
+    @Test
     @DisplayName("Should return 404 when customer is not found")
-    void testGetCustomerNotFound() throws Exception {
+    void testGetCustomerNotFoundOnFindByIdMethod() throws Exception {
+
         BDDMockito.given(customerService.findById(Mockito.anyLong())).willThrow(new CustomerNotFoundException(10L));
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -167,5 +189,33 @@ class CustomerControllerTest {
 
         mockMvc.perform(request)
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Should delete a Customer successfully")
+    void testDeleteCustomer() throws Exception {
+
+        BDDMockito.given(customerService.findById(Mockito.anyLong())).willReturn(savedCustomer);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .delete(CUSTOMER_API + "/{id}", 1L)
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Should throw 404 when failing a Customer successfully")
+    void testFailToDeleteCustomer() throws Exception {
+
+        BDDMockito.given(customerService.findById(Mockito.anyLong())).willReturn(savedCustomer);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .delete(CUSTOMER_API + "/{id}", 1L)
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isNoContent());
     }
 }
