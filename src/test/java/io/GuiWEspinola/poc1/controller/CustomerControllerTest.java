@@ -173,7 +173,7 @@ class CustomerControllerTest {
                 .andExpect(jsonPath("name").value(expectedResponse.getName()))
                 .andExpect(jsonPath("email").value(expectedResponse.getEmail()))
                 .andExpect(jsonPath("documentType").value(expectedResponse.getDocumentType().toString()))
-                .andExpect(jsonPath("documentNumber").value(expectedResponse.getDocumentNumber()))
+                .andExpect(jsonPath("documentNumber").value(expectedResponse.getDocumentNumber())) //TODO change return to mask DocumentNumber
                 .andExpect(jsonPath("mobileNumber").value(expectedResponse.getMobileNumber()));
     }
 
@@ -194,20 +194,6 @@ class CustomerControllerTest {
     @Test
     @DisplayName("Should delete a Customer successfully")
     void testDeleteCustomer() throws Exception {
-
-        BDDMockito.given(customerService.findById(Mockito.anyLong())).willReturn(savedCustomer);
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .delete(CUSTOMER_API + "/{id}", 1L)
-                .accept(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(request)
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
-    @DisplayName("Should throw 404 when failing a Customer successfully")
-    void testFailToDeleteCustomer() throws Exception {
 
         BDDMockito.given(customerService.findById(Mockito.anyLong())).willReturn(savedCustomer);
 
