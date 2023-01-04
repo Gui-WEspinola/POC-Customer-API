@@ -3,7 +3,9 @@ package io.GuiWEspinola.poc1.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequest;
+import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequest;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponse;
+import io.GuiWEspinola.poc1.entities.dto.response.CustomerUpdateResponse;
 import io.GuiWEspinola.poc1.enums.DocumentType;
 import io.GuiWEspinola.poc1.exception.CustomerNotFoundException;
 import io.GuiWEspinola.poc1.service.impl.CustomerServiceImpl;
@@ -135,7 +137,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("Should throw a list of errors when failing to create a Customer with empty fields")
+    @DisplayName("Should throw a list of errors when trying to create a Customer with empty fields")
     void testPostCustomerAndThrowException() throws Exception {
 
         String json = new ObjectMapper().writeValueAsString(new CustomerRequest());
@@ -176,7 +178,6 @@ class CustomerControllerTest {
                 .andExpect(jsonPath("documentNumber").value(expectedResponse.getDocumentNumber())) //TODO change return to mask DocumentNumber
                 .andExpect(jsonPath("mobileNumber").value(expectedResponse.getMobileNumber()));
     }
-
     @Test
     @DisplayName("Should return 404 when customer is not found")
     void testGetCustomerNotFoundOnFindByIdMethod() throws Exception {
@@ -190,7 +191,6 @@ class CustomerControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isNotFound());
     }
-
     @Test
     @DisplayName("Should delete a Customer successfully")
     void testDeleteCustomer() throws Exception {
@@ -204,4 +204,40 @@ class CustomerControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
     }
+
+    @Test
+    @DisplayName("Should update a Customer successfully")
+    void testUpdateCustomer() throws Exception {
+
+        CustomerUpdateRequest updateRequest = new CustomerUpdateRequest("joao silva", "joao@email", "987654321");
+        CustomerUpdateResponse updatedResponse = new CustomerUpdateResponse("joao silva", "joao@email", "987654321");
+
+        String json = new ObjectMapper().writeValueAsString(updateRequest);
+
+        Customer updatedCustomer = Customer.builder()
+                .id(savedCustomer.getId())
+                .name(updateRequest.getName())
+                .email(updateRequest.getEmail())
+                .address(savedCustomer.getAddress())
+                .documentType(savedCustomer.getDocumentType())
+                .documentNumber(savedCustomer.getDocumentNumber())
+                .mobileNumber(updateRequest.getMobileNumber()).build();
+
+        BDDMockito.given(customerService.update(updateRequest,  1L)).willReturn(updatedCustomer);
+        BDDMockito.given(mapper.map(updatedCustomer, CustomerUpdateResponse.class)).willReturn(updatedResponse);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(CUSTOMER_API + "/{id}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(request)
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.name").value("joao silva"))
+                .andExpect(jsonPath("$.email").value("joao@email"))
+                .andExpect(jsonPath("$.mobileNumber").value("987654321"));
+    }
+
+
 }

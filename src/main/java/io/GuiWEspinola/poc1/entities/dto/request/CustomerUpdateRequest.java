@@ -13,7 +13,7 @@ import javax.validation.constraints.Pattern;
 public class CustomerUpdateRequest {
 
     @NotBlank(message = "Name is a required field.")
-    @Pattern(regexp = "^[A-Za-z]+( [A-Za-z]+)*$", message = "Full name is required.")
+//    @Pattern(regexp = "^[A-Za-z]+( [A-Za-z]+)*$", message = "Full name is required.")
     private String name;
 
     @Email(message = "Please enter a valid e-mail.")
