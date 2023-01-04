@@ -9,6 +9,7 @@ import io.GuiWEspinola.poc1.entities.dto.response.CustomerUpdateResponse;
 import io.GuiWEspinola.poc1.enums.DocumentType;
 import io.GuiWEspinola.poc1.exception.CustomerNotFoundException;
 import io.GuiWEspinola.poc1.service.impl.CustomerServiceImpl;
+import org.hibernate.criterion.Example;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,6 +32,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -178,6 +185,7 @@ class CustomerControllerTest {
                 .andExpect(jsonPath("documentNumber").value(expectedResponse.getDocumentNumber())) //TODO change return to mask DocumentNumber
                 .andExpect(jsonPath("mobileNumber").value(expectedResponse.getMobileNumber()));
     }
+
     @Test
     @DisplayName("Should return 404 when customer is not found")
     void testGetCustomerNotFoundOnFindByIdMethod() throws Exception {
@@ -191,6 +199,7 @@ class CustomerControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isNotFound());
     }
+
     @Test
     @DisplayName("Should delete a Customer successfully")
     void testDeleteCustomer() throws Exception {
@@ -203,6 +212,13 @@ class CustomerControllerTest {
 
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Should return pages of Customers")
+    void testReturnPageOfCustomers() throws Exception {
+
+
     }
 
     @Test
@@ -223,7 +239,7 @@ class CustomerControllerTest {
                 .documentNumber(savedCustomer.getDocumentNumber())
                 .mobileNumber(updateRequest.getMobileNumber()).build();
 
-        BDDMockito.given(customerService.update(updateRequest,  1L)).willReturn(updatedCustomer);
+        BDDMockito.given(customerService.update(updateRequest, 1L)).willReturn(updatedCustomer);
         BDDMockito.given(mapper.map(updatedCustomer, CustomerUpdateResponse.class)).willReturn(updatedResponse);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -234,10 +250,34 @@ class CustomerControllerTest {
 
         mockMvc.perform(request)
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("$.name").value("joao silva"))
-                .andExpect(jsonPath("$.email").value("joao@email"))
-                .andExpect(jsonPath("$.mobileNumber").value("987654321"));
+                .andExpect(jsonPath("name").value("joao silva"))
+                .andExpect(jsonPath("email").value("joao@email"))
+                .andExpect(jsonPath("mobileNumber").value("987654321"));
     }
 
+    @Test
+    @DisplayName("Should return a list of customers successfully")
+    void testGetCustomers() throws Exception {
 
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        List<Customer> customerList = List.of(savedCustomer);
+        Page<Customer> page = new PageImpl<Customer>(customerList, pageRequest, 1);
+
+        BDDMockito.given(customerService.findAll(Mockito.any(Pageable.class))).willReturn(page);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(CUSTOMER_API)
+                .param("page", "0")
+                .param("size", "10")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id").value(expectedResponse.getId()))
+                .andExpect(jsonPath("$.content[0].name").value(expectedResponse.getName()))
+                .andExpect(jsonPath("$.content[0].email").value(expectedResponse.getEmail()))
+                .andExpect(jsonPath("$.content[0].documentType").value(expectedResponse.getDocumentType().toString()))
+                .andExpect(jsonPath("$.content[0].documentNumber").value(expectedResponse.getDocumentType().getMask())) //TODO change return to mask DocumentNumber
+                .andExpect(jsonPath("$.content[0].mobileNumber").value(expectedResponse.getMobileNumber()));
+    }
 }
