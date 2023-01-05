@@ -6,16 +6,18 @@ import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequest;
 import io.GuiWEspinola.poc1.entities.dto.response.AddressResponse;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponse;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerUpdateResponse;
-import io.GuiWEspinola.poc1.service.CustomerService;
-import jakarta.validation.Valid;
+import io.GuiWEspinola.poc1.service.impl.CustomerServiceImpl;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -25,22 +27,26 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping(path = "poc1/api/customers")
 public class CustomerController {
 
-    private final CustomerService customerService;
+    private final CustomerServiceImpl customerService;
 
     private final ModelMapper mapper;
 
     @GetMapping
     @ResponseStatus(OK)
     public Page<CustomerResponse> getCustomers(
-            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
+            @PageableDefault Pageable pageable,
             @RequestParam(required = false) String name) {
 
+        Page<Customer> page;
         if (name != null) {
-            Page<Customer> page = customerService.findByCustomerName(name, pageable);
+            page = customerService.findByCustomerNameLike(name, pageable);
+        } else {
+            page = customerService.findAll(pageable);
+        }
+        if (page != null) {
             return page.map(CustomerResponse::new);
         } else {
-            Page<Customer> page = customerService.findAll(pageable);
-            return page.map(CustomerResponse::new);
+            return new PageImpl<>(Collections.emptyList());
         }
     }
 
@@ -54,7 +60,7 @@ public class CustomerController {
     @ResponseStatus(OK)
     public Page<CustomerResponse> searchCustomerByName(
             @RequestParam String name,
-            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = "id") Pageable pageable) {
+            @PageableDefault Pageable pageable) {
 
         var page = customerService.findCustomerNameContaining(name, pageable);
         return page.map(customer -> mapper.map(customer, CustomerResponse.class));
@@ -63,7 +69,10 @@ public class CustomerController {
     @GetMapping("/addresses/{id}")
     @ResponseStatus(OK)
     public List<AddressResponse> getAllAddressesByCustomer(@PathVariable Long id) {
-        return customerService.getAllAddresses(id);
+        return customerService.getAllAddresses(id)
+                .stream()
+                .map(address -> mapper.map(address, AddressResponse.class))
+                .toList();
     }
 
     @PostMapping

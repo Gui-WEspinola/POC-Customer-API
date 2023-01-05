@@ -13,7 +13,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     boolean existsByDocumentNumber(String document);
 
-    Page<Customer> findByNameLikeIgnoreCase (String name, Pageable pageable);
+    Page<Customer> findByNameLikeIgnoreCase(String name, Pageable pageable);
 
     Page<Customer> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }
