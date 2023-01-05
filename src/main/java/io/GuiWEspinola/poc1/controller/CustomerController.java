@@ -39,7 +39,7 @@ public class CustomerController {
 
         Page<Customer> page;
         if (name != null) {
-            page = customerService.findByCustomerName(name, pageable);
+            page = customerService.findByCustomerNameLike(name, pageable);
         } else {
             page = customerService.findAll(pageable);
         }
@@ -60,7 +60,7 @@ public class CustomerController {
     @ResponseStatus(OK)
     public Page<CustomerResponse> searchCustomerByName(
             @RequestParam String name,
-            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = "id") Pageable pageable) {
+            @PageableDefault Pageable pageable) {
 
         var page = customerService.findCustomerNameContaining(name, pageable);
         return page.map(customer -> mapper.map(customer, CustomerResponse.class));

@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Page<Customer> findByCustomerName(String name, Pageable pageable) {
+    public Page<Customer> findByCustomerNameLike(String name, Pageable pageable) {
         return customerRepository.findByNameLikeIgnoreCase(name, pageable);
     }
 
