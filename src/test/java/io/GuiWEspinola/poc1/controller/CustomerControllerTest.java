@@ -219,13 +219,6 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("Should return pages of Customers")
-    void testReturnPageOfCustomers() throws Exception {
-
-
-    }
-
-    @Test
     @DisplayName("Should update a Customer successfully")
     void testUpdateCustomer() throws Exception {
 
@@ -287,7 +280,7 @@ class CustomerControllerTest {
 
     @Test
     @DisplayName("Should filter customers by exact name")
-    void testFilterCustomerByName() throws Exception {
+    void testFilterCustomerByName() throws Exception { //TODO CONSERTAR ESSA COISA
 
         PageRequest pageRequest = PageRequest.of(0, 10);
         List<Customer> customerList = List.of(savedCustomer);
@@ -310,6 +303,37 @@ class CustomerControllerTest {
                 .andExpect(jsonPath("$.content[0].documentType").value(expectedResponse.getDocumentType().toString()))
                 .andExpect(jsonPath("$.content[0].documentNumber").value(expectedResponse.getDocumentType().getMask())) //TODO change return to mask DocumentNumber
                 .andExpect(jsonPath("$.content[0].mobileNumber").value(expectedResponse.getMobileNumber()));
+    }
+
+    @Test
+    @DisplayName("Should return pages of Customers on getCustomers")
+    void testEmptyPageOfCustomers() throws Exception {
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        List<Customer> emptyList = new ArrayList<>();
+        Page<Customer> page = new PageImpl<>(emptyList, pageRequest, 0);
+
+        given(customerService.findByCustomerName("guilherme", pageRequest)).willReturn(page);
+        given(customerService.findAll(pageRequest)).willReturn(page);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                .get(CUSTOMER_API)
+                .param("page", "0")
+                .param("size", "10")
+                .param("name", "gui")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("content").isEmpty())
+                .andExpect(jsonPath("sort.empty").value(true))
+                .andReturn();
+
+        MvcResult resultFindAll = mockMvc.perform(MockMvcRequestBuilders
+                .get(CUSTOMER_API)
+                .param("page", "0")
+                .param("size", "10")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("content").isEmpty())
+                .andExpect(jsonPath("sort.empty").value(true))
+                .andReturn();
     }
 
     @Test
