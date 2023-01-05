@@ -10,12 +10,14 @@ import io.GuiWEspinola.poc1.service.impl.CustomerServiceImpl;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -32,15 +34,19 @@ public class CustomerController {
     @GetMapping
     @ResponseStatus(OK)
     public Page<CustomerResponse> getCustomers(
-            @PageableDefault(size = 10, direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
+            @PageableDefault Pageable pageable,
             @RequestParam(required = false) String name) {
 
+        Page<Customer> page;
         if (name != null) {
-            Page<Customer> page = customerService.findByCustomerName(name, pageable);
+            page = customerService.findByCustomerName(name, pageable);
+        } else {
+            page = customerService.findAll(pageable);
+        }
+        if (page != null) {
             return page.map(CustomerResponse::new);
         } else {
-            Page<Customer> page = customerService.findAll(pageable);
-            return page.map(CustomerResponse::new);
+            return new PageImpl<>(Collections.emptyList());
         }
     }
 
