@@ -1,15 +1,16 @@
 package io.GuiWEspinola.poc1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequest;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequest;
+import io.GuiWEspinola.poc1.entities.dto.response.AddressResponse;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerResponse;
 import io.GuiWEspinola.poc1.entities.dto.response.CustomerUpdateResponse;
 import io.GuiWEspinola.poc1.enums.DocumentType;
 import io.GuiWEspinola.poc1.exception.CustomerNotFoundException;
 import io.GuiWEspinola.poc1.service.impl.CustomerServiceImpl;
-import org.hibernate.criterion.Example;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -86,11 +89,13 @@ class CustomerControllerTest {
             .documentNumber("25.229.847/0001-73")
             .mobileNumber("83993347877").build();
 
+    private static final Long ID = 1L;
+
     @Test
     @DisplayName("Should successfully create a customer with a valid CPF")
     void testPostCustomerCPF() throws Exception {
         // Set up mock behavior
-        BDDMockito.given(customerService.save(Mockito.any(CustomerRequest.class))).willReturn(savedCustomer);
+        BDDMockito.given(customerService.save(any(CustomerRequest.class))).willReturn(savedCustomer);
         BDDMockito.given(mapper.map(savedCustomer, CustomerResponse.class)).willReturn(expectedResponse);
 
         // Convert test data to JSON
@@ -122,7 +127,7 @@ class CustomerControllerTest {
     @DisplayName("Should successfully create a customer with a valid CNPJ")
     void testPostCustomerCNPJ() throws Exception {
         // Set up mock behavior
-        BDDMockito.given(customerService.save(Mockito.any(CustomerRequest.class))).willReturn(savedCustomer);
+        BDDMockito.given(customerService.save(any(CustomerRequest.class))).willReturn(savedCustomer);
         BDDMockito.given(mapper.map(savedCustomer, CustomerResponse.class)).willReturn(expectedResponse);
         // Convert test data to JSON
         String json = new ObjectMapper().writeValueAsString(customerRequestCNPJ);
@@ -263,7 +268,7 @@ class CustomerControllerTest {
         List<Customer> customerList = List.of(savedCustomer);
         Page<Customer> page = new PageImpl<Customer>(customerList, pageRequest, 1);
 
-        BDDMockito.given(customerService.findAll(Mockito.any(Pageable.class))).willReturn(page);
+        BDDMockito.given(customerService.findAll(any(Pageable.class))).willReturn(page);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get(CUSTOMER_API)
@@ -279,5 +284,41 @@ class CustomerControllerTest {
                 .andExpect(jsonPath("$.content[0].documentType").value(expectedResponse.getDocumentType().toString()))
                 .andExpect(jsonPath("$.content[0].documentNumber").value(expectedResponse.getDocumentType().getMask())) //TODO change return to mask DocumentNumber
                 .andExpect(jsonPath("$.content[0].mobileNumber").value(expectedResponse.getMobileNumber()));
+    }
+
+    @Test
+    @DisplayName("Should return a list of address of a specified customer")
+    void testReturnListOfAddressesByCustomerId() throws Exception {
+
+        Address address1 = new Address(1L, "rua nova", "100", "", "centro",
+                "joao pessoa", "58037-605", "PB", false, savedCustomer);
+        Address address2 = new Address(2L, "rua nova", "200", "", "centro",
+                "joao pessoa", "58037-605", "PB", true, savedCustomer);
+
+        AddressResponse addressResponse1 = new AddressResponse(1L, "rua nova", "100", "", "centro",
+                "joao pessoa", "58037-605", "PB", false);
+        AddressResponse addressResponse2 = new AddressResponse(1L, "rua nova", "200", "", "centro",
+                "joao pessoa", "58037-605", "PB", false);
+
+        List<Address> addressList = new ArrayList<>();
+        addressList.add(address1);
+        addressList.add(address2);
+        List<AddressResponse> addressResponses = new ArrayList<>();
+        addressResponses.add(addressResponse1);
+        addressResponses.add(addressResponse2);
+
+        savedCustomer.setAddress(addressList);
+
+        BDDMockito.given(customerService.getAllAddresses(anyLong())).willReturn(addressList);
+        BDDMockito.given(mapper.map(addressList.get(0), AddressResponse.class)).willReturn(addressResponses.get(0));
+        BDDMockito.given(mapper.map(addressList.get(1), AddressResponse.class)).willReturn(addressResponses.get(1));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                .get(CUSTOMER_API + "/addresses/{id}", ID)
+                .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("[0]").isNotEmpty())
+                    .andExpect(jsonPath("[1]").isNotEmpty())
+                    .andReturn();
     }
 }

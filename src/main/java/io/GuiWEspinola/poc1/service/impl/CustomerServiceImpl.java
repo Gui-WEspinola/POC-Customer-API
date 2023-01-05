@@ -1,9 +1,9 @@
 package io.GuiWEspinola.poc1.service.impl;
 
+import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequest;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequest;
-import io.GuiWEspinola.poc1.entities.dto.response.AddressResponse;
 import io.GuiWEspinola.poc1.exception.CustomerNotFoundException;
 import io.GuiWEspinola.poc1.exception.DocumentInUseException;
 import io.GuiWEspinola.poc1.exception.ExistingEmailException;
@@ -80,11 +80,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<AddressResponse> getAllAddresses(Long id) {
-        return findById(id).getAddress()
-                .stream()
-                .map(address -> mapper.map(address, AddressResponse.class))
-                .toList();
+    public List<Address> getAllAddresses(Long id) {
+        return findById(id).getAddress();
     }
 
     @Override

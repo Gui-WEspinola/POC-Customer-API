@@ -63,7 +63,10 @@ public class CustomerController {
     @GetMapping("/addresses/{id}")
     @ResponseStatus(OK)
     public List<AddressResponse> getAllAddressesByCustomer(@PathVariable Long id) {
-        return customerService.getAllAddresses(id);
+        return customerService.getAllAddresses(id)
+                .stream()
+                .map(address -> mapper.map(address, AddressResponse.class))
+                .toList();
     }
 
     @PostMapping
