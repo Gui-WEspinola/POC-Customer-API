@@ -105,6 +105,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
+    @DisplayName("Should create a customer")
     void testCreateCustomerSuccessfully() {
         when(customerRepository.save(any())).thenReturn(customerCPF);
 
@@ -132,6 +133,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
+    @DisplayName("should return a list of addresses by Customer ID")
     void getAllAddresses() {
         List<Address> addresses = List.of(new Address(ID, "rua nova", "60", "apt 205",
                 "centro", "recife", "1234567", "PB", true, customerCPF));
@@ -148,6 +150,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
+    @DisplayName("Should throw ExistingEmailException when email is unavailable")
     void checksAvailableEmail() {
         when(customerRepository.existsByEmail(any())).thenReturn(true);
 
@@ -160,6 +163,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
+    @DisplayName("Should throw DocumentInUseException when documentNumber is already in use")
     void checksDocumentNumber() {
         when(customerRepository.existsByDocumentNumber(any())).thenReturn(true);
 

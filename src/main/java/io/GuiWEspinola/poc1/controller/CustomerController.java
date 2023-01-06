@@ -12,12 +12,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -46,7 +45,7 @@ public class CustomerController {
         if (page != null) {
             return page.map(CustomerResponse::new);
         } else {
-            return new PageImpl<>(Collections.emptyList());
+            return new PageImpl<>(new ArrayList<>());
         }
     }
 

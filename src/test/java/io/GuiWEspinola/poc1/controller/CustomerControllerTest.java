@@ -311,26 +311,26 @@ class CustomerControllerTest {
 
         PageRequest pageRequest = PageRequest.of(0, 10);
         List<Customer> emptyList = new ArrayList<>();
-        Page<Customer> page = new PageImpl<>(emptyList, pageRequest, 0);
+        Page<Customer> page = new PageImpl<>(new ArrayList<>(), pageRequest, 0);
 
         given(customerService.findByCustomerNameLike("joao", pageRequest)).willReturn(page);
         given(customerService.findAll(pageRequest)).willReturn(page);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
-                .get(CUSTOMER_API)
-                .param("page", "0")
-                .param("size", "10")
-                .param("name", "joao")
-                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(CUSTOMER_API)
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("name", "joao")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("content").isEmpty())
                 .andExpect(jsonPath("sort.empty").value(true))
                 .andReturn();
 
-        MvcResult resultFindAll = mockMvc.perform(MockMvcRequestBuilders
-                .get(CUSTOMER_API)
-                .param("page", "0")
-                .param("size", "10")
-                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(CUSTOMER_API)
+                        .param("page", "0")
+                        .param("size", "10")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("content").isEmpty())
                 .andExpect(jsonPath("sort.empty").value(true))
                 .andReturn();
