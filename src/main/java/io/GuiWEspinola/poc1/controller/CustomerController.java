@@ -16,7 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -42,10 +42,10 @@ public class CustomerController {
         } else {
             page = customerService.findAll(pageable);
         }
-        if (page != null) {
+        if (!page.isEmpty()) {
             return page.map(CustomerResponse::new);
         } else {
-            return new PageImpl<>(new ArrayList<>());
+            return new PageImpl<>(Collections.emptyList());
         }
     }
 

@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -311,7 +312,7 @@ class CustomerControllerTest {
 
         PageRequest pageRequest = PageRequest.of(0, 10);
         List<Customer> emptyList = new ArrayList<>();
-        Page<Customer> page = new PageImpl<>(new ArrayList<>(), pageRequest, 0);
+        Page<Customer> page = new PageImpl<>(Collections.emptyList(), pageRequest, 1);
 
         given(customerService.findByCustomerNameLike("joao", pageRequest)).willReturn(page);
         given(customerService.findAll(pageRequest)).willReturn(page);
@@ -332,7 +333,7 @@ class CustomerControllerTest {
                         .param("size", "10")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("content").isEmpty())
-                .andExpect(jsonPath("sort.empty").value(true))
+                .andExpect(jsonPath("empty").value(true))
                 .andReturn();
     }
 
@@ -342,7 +343,7 @@ class CustomerControllerTest {
 
         PageRequest pageRequest = PageRequest.of(0, 10);
         List<Customer> customerList = List.of(savedCustomer);
-        Page<Customer> page = new PageImpl<Customer>(customerList, pageRequest, 1);
+        Page<Customer> page = new PageImpl<>(customerList, pageRequest, 1);
 
         given(customerService.findCustomerNameContaining("gui", pageRequest)).willReturn(page);
         given(mapper.map(savedCustomer, CustomerResponse.class)).willReturn(expectedResponse);

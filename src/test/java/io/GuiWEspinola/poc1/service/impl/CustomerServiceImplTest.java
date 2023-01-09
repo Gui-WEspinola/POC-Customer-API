@@ -3,6 +3,8 @@ package io.GuiWEspinola.poc1.service.impl;
 import io.GuiWEspinola.poc1.entities.Address;
 import io.GuiWEspinola.poc1.entities.Customer;
 import io.GuiWEspinola.poc1.entities.dto.request.CustomerRequest;
+import io.GuiWEspinola.poc1.entities.dto.request.CustomerUpdateRequest;
+import io.GuiWEspinola.poc1.entities.dto.response.CustomerUpdateResponse;
 import io.GuiWEspinola.poc1.enums.DocumentType;
 import io.GuiWEspinola.poc1.exception.CustomerNotFoundException;
 import io.GuiWEspinola.poc1.exception.DocumentInUseException;
@@ -151,7 +153,7 @@ class CustomerServiceImplTest {
 
     @Test
     @DisplayName("Should throw ExistingEmailException when email is unavailable")
-    void checksAvailableEmail() {
+    void testChecksAvailableEmail() {
         when(customerRepository.existsByEmail(any())).thenReturn(true);
 
         try {
@@ -164,7 +166,7 @@ class CustomerServiceImplTest {
 
     @Test
     @DisplayName("Should throw DocumentInUseException when documentNumber is already in use")
-    void checksDocumentNumber() {
+    void testChecksDocumentNumber() {
         when(customerRepository.existsByDocumentNumber(any())).thenReturn(true);
 
         try {
@@ -173,6 +175,26 @@ class CustomerServiceImplTest {
             assertEquals(DocumentInUseException.class, e.getClass());
             assertEquals("The following document is already in use: '097.169.134-78'", e.getMessage());
         }
+    }
+
+    @Test
+    @DisplayName("Should update a customer with new information")
+    void testCustomerUpdate() {
+        CustomerUpdateRequest updateRequest = new CustomerUpdateRequest
+                ("joão", "joao@gmail.com", "993347877");
+
+        customerCPF.setName(updateRequest.getName());
+        customerCPF.setEmail(updateRequest.getEmail());
+        customerCPF.setMobileNumber(updateRequest.getMobileNumber());
+
+        when(customerRepository.save(any(Customer.class))).thenReturn(customerCPF);
+        when(customerRepository.findById(anyLong())).thenReturn(customerOptional);
+
+        customerService.update(updateRequest, ID);
+
+        assertEquals(customerCPF.getName(), updateRequest.getName());
+        assertEquals(customerCPF.getEmail(), updateRequest.getEmail());
+        assertEquals(customerCPF.getMobileNumber(), updateRequest.getMobileNumber());
     }
 
     private void startCustomer() {
