@@ -12,7 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +42,7 @@ public class CustomerController {
         } else {
             page = customerService.findAll(pageable);
         }
-        if (page != null) {
+        if (!page.isEmpty()) {
             return page.map(CustomerResponse::new);
         } else {
             return new PageImpl<>(Collections.emptyList());

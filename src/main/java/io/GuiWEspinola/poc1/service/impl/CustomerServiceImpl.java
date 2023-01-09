@@ -51,7 +51,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public Customer save(CustomerRequest customerRequest) {
-
         checksAvailableEmail(customerRequest.getEmail());
         checksDocumentNumber(customerRequest.getDocumentNumber());
 
@@ -86,14 +85,14 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void checksAvailableEmail(String email) {
-        if (customerRepository.existsByEmail(email)){
+        if (customerRepository.existsByEmail(email)) {
             throw new ExistingEmailException(email);
         }
     }
 
     @Override
     public void checksDocumentNumber(String document) {
-        if (customerRepository.existsByDocumentNumber(document)){
+        if (customerRepository.existsByDocumentNumber(document)) {
             throw new DocumentInUseException(document);
         }
     }
