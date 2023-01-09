@@ -18,14 +18,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class CustomerServiceImplTest {
@@ -66,18 +70,56 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void findAll() {
+    void findAllCustomersEmptyPage() {
+        PageRequest pageable = PageRequest.of(0, 10);
+        Page<Customer> expectedPage = Page.empty();
 
+        when(customerRepository.findAll(pageable)).thenReturn(expectedPage);
+
+        Page<Customer> result = customerService.findAll(pageable);
+
+        verify(customerRepository).findAll(pageable);
+        assertEquals(expectedPage, result);
     }
 
     @Test
-    void findByCustomerName() {
+    void findAllCustomerPages() {
+        PageRequest pageable = PageRequest.of(0, 10);
+        Page<Customer> expectedPage = new PageImpl<>(List.of(customerCPF));
 
+        when(customerRepository.findAll(pageable)).thenReturn(expectedPage);
+
+        Page<Customer> result = customerService.findAll(pageable);
+
+        verify(customerRepository).findAll(pageable);
+        assertEquals(expectedPage, result);
+    }
+
+
+    @Test
+    void testFindByCustomerNameLike() {
+        PageRequest pageable = PageRequest.of(0, 10);
+        Page<Customer> expectedPage = Page.empty();
+
+        when(customerRepository.findByNameLikeIgnoreCase("smith", pageable)).thenReturn(expectedPage);
+
+        Page<Customer> result = customerService.findByCustomerNameLike("smith", pageable);
+
+        verify(customerRepository).findByNameLikeIgnoreCase("smith", pageable);
+        assertEquals(expectedPage, result);
     }
 
     @Test
     void findCustomerNameContaining() {
+        PageRequest pageable = PageRequest.of(0, 10);
+        Page<Customer> expectedPage = new PageImpl<>(List.of(customerCPF));
 
+        when(customerRepository.findByNameContainingIgnoreCase(anyString(), any(Pageable.class))).thenReturn(expectedPage);
+
+        Page<Customer> result = customerService.findCustomerNameContaining("GuI", pageable);
+
+        verify(customerRepository).findByNameContainingIgnoreCase("GuI", pageable);
+        assertEquals(expectedPage, result);
     }
 
     @Test
@@ -119,11 +161,6 @@ class CustomerServiceImplTest {
         assertEquals(EMAIL, response.getEmail());
         assertEquals(DOCUMENT_NUMBER, response.getDocumentNumber());
         assertEquals(DocumentType.CPF, response.getDocumentType());
-    }
-
-    @Test
-    void testThrowExceptionWhenCreatingCustomer() {
-
     }
 
     @Test
