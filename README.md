@@ -9,7 +9,7 @@ endereço após envio de um CEP via requisição.
 
 Portanto, trata-se de um CRUD básico que poderia ser resumido nas seguintes features:
 
-### Features e conceitos trabalhados
+### Features e conceitos trabalhados até o momento:
 
 * Aplicação em Java 17 utilizando Spring Boot;
 * Armazenamento em banco de dados relacional (MySQL);
@@ -20,4 +20,7 @@ Portanto, trata-se de um CRUD básico que poderia ser resumido nas seguintes fea
 * Consumo de API externa do [ViaCep](https://viacep.com.br/);
 * Utilização de ModelMapper para conversão de objetos;
 
-**UNDER CONSTRUCTION**
+### Features futuras:
+
+* Realizar a conversão em uma imagem e container do Docker;
+* Implementar a segurança da API utilizando Keycloak e Oauth2
