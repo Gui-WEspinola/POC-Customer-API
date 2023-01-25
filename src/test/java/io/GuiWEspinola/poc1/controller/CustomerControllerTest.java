@@ -56,7 +56,7 @@ class CustomerControllerTest {
     @MockBean
     ModelMapper mapper;
 
-    static String CUSTOMER_API = "/poc1/api/customers";
+    static String CUSTOMER_API = "/api/poc1/customers";
 
     Customer savedCustomer = Customer.builder()
             .id(1L)

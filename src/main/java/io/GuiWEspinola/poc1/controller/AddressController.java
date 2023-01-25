@@ -15,7 +15,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "poc1/api/addresses")
+@RequestMapping(path = "api/poc1/addresses")
 public class AddressController {
 
     @Autowired
